@@ -1,0 +1,34 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"YyWidgetToolsExample/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "YyWidgetTools::@98315909e3db048f79a3"
+		}
+	],
+	"id" : "YyWidgetToolsExample_autogen_timestamp_deps::@8c23548a7f7e9b13f7af",
+	"isGeneratorProvided" : true,
+	"name" : "YyWidgetToolsExample_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "YyWidgetToolsExample",
+		"source" : "YyWidgetToolsExample"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
