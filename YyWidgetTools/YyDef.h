@@ -35,7 +35,7 @@ class Yy_EXPORT CLASS : public QObject \
     enum WindowDisplayMode
     {
         Normal = 0x0000,
-        ElaMica = 0x0001,
+        YyMica = 0x0001,
 #if defined(Q_OS_WIN)
         Mica = 0x0002,
         MicaAlt = 0x0003,
@@ -44,9 +44,9 @@ class Yy_EXPORT CLASS : public QObject \
 #endif
     };
     Q_ENUM_CREATE(WindowDisplayMode)
-    Q_END_ENUM_CREATE(ElaApplicationType)
+    Q_END_ENUM_CREATE(YyApplicationType)
 
-    Q_BEGIN_ENUM_CREATE(ElaThemeType)
+    Q_BEGIN_ENUM_CREATE(YyThemeType)
     enum ThemeMode
     {
         Light = 0x0000,
@@ -101,9 +101,9 @@ class Yy_EXPORT CLASS : public QObject \
         Win10BorderInactive
     };
     Q_ENUM_CREATE(ThemeColor)
-    Q_END_ENUM_CREATE(ElaThemeType)
+    Q_END_ENUM_CREATE(YyThemeType)
 
-    Q_BEGIN_ENUM_CREATE(ElaAppBarType)
+    Q_BEGIN_ENUM_CREATE(YyAppBarType)
     enum ButtonType
     {
         NoneButtonHint = 0x0000,
@@ -136,11 +136,11 @@ class Yy_EXPORT CLASS : public QObject \
     };
     Q_ENUM_CREATE(WMMouseActionType)
     Q_DECLARE_FLAGS(WMMouseActionTypes, WMMouseActionType)
-    Q_END_ENUM_CREATE(ElaAppBarType)
-    Q_DECLARE_OPERATORS_FOR_FLAGS(ElaAppBarType::ButtonFlags)
-    Q_DECLARE_OPERATORS_FOR_FLAGS(ElaAppBarType::WMMouseActionTypes)
+    Q_END_ENUM_CREATE(YyAppBarType)
+    Q_DECLARE_OPERATORS_FOR_FLAGS(YyAppBarType::ButtonFlags)
+    Q_DECLARE_OPERATORS_FOR_FLAGS(YyAppBarType::WMMouseActionTypes)
 
-    Q_BEGIN_ENUM_CREATE(ElaTextType)
+    Q_BEGIN_ENUM_CREATE(YyTextType)
     enum TextStyle
     {
         NoStyle = 0x0000,
@@ -149,13 +149,13 @@ class Yy_EXPORT CLASS : public QObject \
         BodyStrong = 0x0003,
         Subtitle = 0x0004,
         Title = 0x0005,
-        TitleLarge = 0x0006,
+        TitlYyrge = 0x0006,
         Display = 0x0007,
     };
     Q_ENUM_CREATE(TextStyle)
-    Q_END_ENUM_CREATE(ElaTextType)
+    Q_END_ENUM_CREATE(YyTextType)
 
-    Q_BEGIN_ENUM_CREATE(ElaNavigationType)
+    Q_BEGIN_ENUM_CREATE(YyNavigationType)
     enum NodeResult
     {
         Success = 0x0000,
@@ -183,9 +183,9 @@ class Yy_EXPORT CLASS : public QObject \
         CategoryNode = 0x0002
     };
     Q_ENUM_CREATE(NavigationNodeType)
-    Q_END_ENUM_CREATE(ElaNavigationType)
+    Q_END_ENUM_CREATE(YyNavigationType)
 
-    Q_BEGIN_ENUM_CREATE(ElaNavigationRouterType)
+    Q_BEGIN_ENUM_CREATE(YyNavigationRouterType)
     enum NavigationRouteType
     {
         Success = 0x0000,
@@ -202,9 +202,9 @@ class Yy_EXPORT CLASS : public QObject \
         ForwardInvalid = 0x0003,
     };
     Q_ENUM_CREATE(RouteMode)
-    Q_END_ENUM_CREATE(ElaNavigationRouterType)
+    Q_END_ENUM_CREATE(YyNavigationRouterType)
 
-    Q_BEGIN_ENUM_CREATE(ElaEventBusType)
+    Q_BEGIN_ENUM_CREATE(YyEventBusType)
     enum EventBusReturnType
     {
         Success = 0x0000,
@@ -213,9 +213,9 @@ class Yy_EXPORT CLASS : public QObject \
 
     };
     Q_ENUM_CREATE(EventBusReturnType)
-    Q_END_ENUM_CREATE(ElaEventBusType)
+    Q_END_ENUM_CREATE(YyEventBusType)
 
-    Q_BEGIN_ENUM_CREATE(ElaCardPixType)
+    Q_BEGIN_ENUM_CREATE(YyCardPixType)
     enum PixMode
     {
         Default = 0x0000,
@@ -223,9 +223,9 @@ class Yy_EXPORT CLASS : public QObject \
         Ellipse = 0x0002,
     };
     Q_ENUM_CREATE(PixMode)
-    Q_END_ENUM_CREATE(ElaCardPixType)
+    Q_END_ENUM_CREATE(YyCardPixType)
 
-    Q_BEGIN_ENUM_CREATE(ElaGraphicsSceneType)
+    Q_BEGIN_ENUM_CREATE(YyGraphicsSceneType)
     enum SceneMode
     {
         Default = 0x0000,
@@ -234,9 +234,9 @@ class Yy_EXPORT CLASS : public QObject \
         ItemLink = 0x0003,
     };
     Q_ENUM_CREATE(SceneMode)
-    Q_END_ENUM_CREATE(ElaGraphicsSceneType)
+    Q_END_ENUM_CREATE(YyGraphicsSceneType)
 
-    Q_BEGIN_ENUM_CREATE(ElaMessageBarType)
+    Q_BEGIN_ENUM_CREATE(YyMessageBarType)
     enum PositionPolicy
     {
         Top = 0x0000,
@@ -258,18 +258,18 @@ class Yy_EXPORT CLASS : public QObject \
         Error = 0x0003,
     };
     Q_ENUM_CREATE(MessageMode)
-    Q_END_ENUM_CREATE(ElaMessageBarType)
+    Q_END_ENUM_CREATE(YyMessageBarType)
 
-    Q_BEGIN_ENUM_CREATE(ElaProgressRingType)
+    Q_BEGIN_ENUM_CREATE(YyProgressRingType)
     enum ValueDisplayMode
     {
         Actual = 0x0000,
         Percent = 0x0001,
     };
     Q_ENUM_CREATE(ValueDisplayMode)
-    Q_END_ENUM_CREATE(ElaProgressRingType)
+    Q_END_ENUM_CREATE(YyProgressRingType)
 
-    Q_BEGIN_ENUM_CREATE(ElaWindowType)
+    Q_BEGIN_ENUM_CREATE(YyWindowType)
     enum StackSwitchMode
     {
         None = 0x0000,
@@ -287,9 +287,9 @@ class Yy_EXPORT CLASS : public QObject \
         Movie = 0x0002,
     };
     Q_ENUM_CREATE(PaintMode)
-    Q_END_ENUM_CREATE(ElaWindowType)
+    Q_END_ENUM_CREATE(YyWindowType)
 
-    Q_BEGIN_ENUM_CREATE(ElaSpinBoxType)
+    Q_BEGIN_ENUM_CREATE(YySpinBoxType)
     enum ButtonMode
     {
         Inline = 0x0000,
@@ -298,9 +298,9 @@ class Yy_EXPORT CLASS : public QObject \
         PMSide = 0x0003,
     };
     Q_ENUM_CREATE(ButtonMode)
-    Q_END_ENUM_CREATE(ElaSpinBoxType)
+    Q_END_ENUM_CREATE(YySpinBoxType)
 
-    Q_BEGIN_ENUM_CREATE(ElaIconType)
+    Q_BEGIN_ENUM_CREATE(YyIconType)
     enum IconName
     {
         None = 0x0,
@@ -1492,10 +1492,10 @@ class Yy_EXPORT CLASS : public QObject \
         FaceKissBeam = 0xeca1,
         FaceKissClosedEyes = 0xeca2,
         FaceKissWinkHeart = 0xeca3,
-        FaceLaugh = 0xeca4,
-        FaceLaughBeam = 0xeca5,
-        FaceLaughSquint = 0xeca6,
-        FaceLaughWink = 0xeca7,
+        FacYyugh = 0xeca4,
+        FacYyughBeam = 0xeca5,
+        FacYyughSquint = 0xeca6,
+        FacYyughWink = 0xeca7,
         FaceLying = 0xeca8,
         FaceMask = 0xeca9,
         FaceMeh = 0xecaa,
@@ -1526,7 +1526,7 @@ class Yy_EXPORT CLASS : public QObject \
         FaceSmileHearts = 0xecc3,
         FaceSmileHorns = 0xecc4,
         FaceSmilePlus = 0xecc5,
-        FaceSmileRelaxed = 0xecc6,
+        FaceSmileRYyxed = 0xecc6,
         FaceSmileTear = 0xecc7,
         FaceSmileTongue = 0xecc8,
         FaceSmileUpsideDown = 0xecc9,
@@ -1990,7 +1990,7 @@ class Yy_EXPORT CLASS : public QObject \
         HouseFloodWater = 0xee93,
         HouseFloodWaterCircleArrowRight = 0xee94,
         HouseHeart = 0xee95,
-        HouseLaptop = 0xee96,
+        HousYyptop = 0xee96,
         HouseLock = 0xee97,
         HouseMedical = 0xee98,
         HouseMedicalCircleCheck = 0xee99,
@@ -2022,7 +2022,7 @@ class Yy_EXPORT CLASS : public QObject \
         IdCardClip = 0xeeb3,
         Igloo = 0xeeb4,
         Image = 0xeeb5,
-        ImageLandscape = 0xeeb6,
+        ImagYyndscape = 0xeeb6,
         ImagePolaroid = 0xeeb7,
         ImagePolaroidUser = 0xeeb8,
         ImagePortrait = 0xeeb9,
@@ -3146,7 +3146,7 @@ class Yy_EXPORT CLASS : public QObject \
         TableCells = 0xf317,
         TableCellsLarge = 0xf318,
         TableColumns = 0xf319,
-        TableLayout = 0xf31a,
+        TablYyyout = 0xf31a,
         TableList = 0xf31b,
         TablePicnic = 0xf31c,
         TablePivot = 0xf31d,
@@ -3229,8 +3229,8 @@ class Yy_EXPORT CLASS : public QObject \
         TireFlat = 0xf36a,
         TirePressureWarning = 0xf36b,
         TireRugged = 0xf36c,
-        ToggleLargeOff = 0xf36d,
-        ToggleLargeOn = 0xf36e,
+        TogglYyrgeOff = 0xf36d,
+        TogglYyrgeOn = 0xf36e,
         ToggleOff = 0xf36f,
         ToggleOn = 0xf370,
         Toilet = 0xf371,
@@ -3305,7 +3305,7 @@ class Yy_EXPORT CLASS : public QObject \
         TreeCity = 0xf3b6,
         TreeDeciduous = 0xf3b7,
         TreeDecorated = 0xf3b8,
-        TreeLarge = 0xf3b9,
+        TreYyrge = 0xf3b9,
         TreePalm = 0xf3ba,
         Trees = 0xf3bb,
         TRex = 0xf3bc,
@@ -3586,6 +3586,6 @@ class Yy_EXPORT CLASS : public QObject \
         XmarkLarge = 0xf4cf,
     };
     Q_ENUM_CREATE(IconName)
-    Q_END_ENUM_CREATE(ElaIconType)
+    Q_END_ENUM_CREATE(YyIconType)
 
 #endif // YYDEF_H

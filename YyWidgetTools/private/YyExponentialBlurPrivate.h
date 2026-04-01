@@ -1,0 +1,26 @@
+#ifndef YyEXPONENTIALBLURPRIVATE_H
+#define YyEXPONENTIALBLURPRIVATE_H
+
+#include <QObject>
+
+#include "YyProperty.h"
+
+class YyExponentialBlur;
+class YyExponentialBlurPrivate : public QObject
+{
+    Q_OBJECT
+    Q_D_CREATE(YyExponentialBlur)
+public:
+    explicit YyExponentialBlurPrivate(QObject* parent = nullptr);
+    ~YyExponentialBlurPrivate();
+
+private:
+    static int _aprec;
+    static int _zprec;
+    static void _drawExponentialBlur(QImage& image, const quint16& qRadius);
+    static void _drawRowBlur(QImage& image, const int& row, const int& alpha);
+    static void _drawColumnBlur(QImage& image, const int& column, const int& alpha);
+    static void _drawInnerBlur(unsigned char* bptr, int& zR, int& zG, int& zB, int& zA, int alpha);
+};
+
+#endif // YyEXPONENTIALBLURPRIVATE_H

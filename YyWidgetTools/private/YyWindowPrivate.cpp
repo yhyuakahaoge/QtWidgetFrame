@@ -1,19 +1,22 @@
-#include "YyAppBarPrivate.h"
+#include "YyWindowPrivate.h"
 
-#include <QDebug>
-#include <QGuiApplication>
-#include <QLabel>
-#include <QMenu>
+#include "YyAppBarPrivate.h"
+//#include "YyApplication.h"
+//#include "YyCentralStackedWidget.h"
+//#include "YyNavigationBar.h"
+#include "YyTheme.h"
+//#include "YyThemeAnimationWidget.h"
+#include "YyWindow.h"
+#include <QApplication>
 #include <QPropertyAnimation>
-#include <QScreen>
+#include <QTimer>
 #include <QVBoxLayout>
-#include <QWidget>
-#include <QWindow>
-YyAppBarPrivate::YyAppBarPrivate(QObject* parent)
+#include <QtMath>
+YyWindowPrivate::YyWindowPrivate(QObject* parent)
     : QObject{parent}
 {
 }
 
-YyAppBarPrivate::~YyAppBarPrivate()
+YyWindowPrivate::~YyWindowPrivate()
 {
 }
