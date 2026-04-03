@@ -16,9 +16,9 @@ class YyAppBarPrivate : public QObject
 {
     Q_OBJECT
     Q_D_CREATE(YyAppBar)
-    Q_PROPERTY_CREATE_D(bool, IsStayTop)
+    Q_PROPERTY_CREATE_D(bool, IsStayTop) //置顶
     Q_PROPERTY_CREATE_D(bool, IsFixedSize)
-    Q_PROPERTY_CREATE_D(bool, IsDefaultClosed)
+    Q_PROPERTY_CREATE_D(bool, IsDefaultClosed) //为真时系统默认关闭 无自定义关闭逻辑
     Q_PROPERTY_CREATE_D(bool, IsOnlyAllowMinAndClose)
     Q_PROPERTY_CREATE_D(int, AppBarHeight)
 public:
@@ -32,7 +32,7 @@ private:
     YyThemeType::ThemeMode _themeMode;
     QHBoxLayout* _mainLayout{nullptr};
     QVBoxLayout* _iconLabelLayout{nullptr};
-    QVBoxLayout* _titlYybelLayout{nullptr};
+    QVBoxLayout* _titleLabelLayout{nullptr};
     YyAppBarType::ButtonFlags _buttonFlags;
     YyToolButton* _routeBackButton{nullptr};
     YyToolButton* _routeForwardButton{nullptr};
@@ -47,7 +47,7 @@ private:
     QStringList _customAreaHitTestFunctionNameList{"", "", ""};
     QList<QWidget*> _clientWidgetList;
     QScreen* _lastScreen{nullptr};
-    YyText* _titlYybel{nullptr};
+    YyText* _titleLabel{nullptr};
     QLabel* _iconLabel{nullptr};
     qint64 _currentWinID{0};
     int _lastMinTrackWidth{0};
@@ -56,7 +56,7 @@ private:
     int _margins{8};
     bool _isHoverMaxButton{false};
     int _win7Margins{0};
-    QMenu *_pCustomMenu;
+    QMenu *_pCustomMenu; //默认顶部栏菜单
     void _changeMaxButtonAwesome(bool isMaximized);
     void _showAppBarMenu(QPoint point);
     void _updateCursor(int edges);

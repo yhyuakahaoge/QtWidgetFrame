@@ -35,6 +35,7 @@ YyAppBar::YyAppBar(QWidget *parent)
     window()->setAttribute(Qt::WA_Mapped);
     d->_pAppBarHeight = 45;
     setFixedHeight(d->_pAppBarHeight);
+    //主窗口里的所有内容 都必须从顶部往下偏移 45px 再开始显示 防止主窗口内容被遮挡
     window()->setContentsMargins(0, this->height(), 0, 0);
     d->q_ptr = this;
     d->_pIsStayTop = false;
@@ -54,7 +55,7 @@ YyAppBar::YyAppBar(QWidget *parent)
 #else
     window()->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::FramelessWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint | Qt::WindowFullscreenButtonHint | Qt::WindowSystemMenuHint);
 #endif
-    setMouseTracking(true);
+    setMouseTracking(true); //不用按下就可以触发MouseMoveEvent
     setObjectName("YyAppBar");
     setStyleSheet("#YyAppBar{background-color:transparent;}");
     d->_routeBackButton = new YyToolButton(this);
@@ -106,31 +107,33 @@ YyAppBar::YyAppBar(QWidget *parent)
         d->_iconLabelLayout->setContentsMargins(icon.isNull() ? 0 : 10, 0, 0, 0);
     });
 
-    //标题
-    d->_titlYybel = new YyText(this);
-    d->_titlYybel->setIsWrapAnywhere(false);
-    d->_titlYybel->setTextPixelSize(13);
-    d->_titlYybelLayout = d->_createVLayout(d->_titlYybel);
+    // 标题
+    d->_titleLabel = new YyText(this);
+    d->_titleLabel->setIsWrapAnywhere(false);
+    d->_titleLabel->setTextPixelSize(13);
+    d->_titleLabelLayout = d->_createVLayout(d->_titleLabel);
     if (parent->windowTitle().isEmpty())
     {
-        d->_titlYybel->setVisible(false);
+        d->_titleLabel->setVisible(false);
     }
     else
     {
-        d->_titlYybel->setText(parent->windowTitle());
-        d->_titlYybelLayout->setContentsMargins(10, 0, 0, 0);
+        d->_titleLabel->setText(parent->windowTitle());
+        d->_titleLabelLayout->setContentsMargins(10, 0, 0, 0);
     }
     connect(parent, &QWidget::windowTitleChanged, this, [=](const QString& title) {
-        d->_titlYybel->setText(title);
-        d->_titlYybel->setVisible(!title.isEmpty());
-        d->_titlYybelLayout->setContentsMargins(title.isEmpty() ? 0 : 10, 0, 0, 0);
+        d->_titleLabel->setText(title);
+        d->_titleLabel->setVisible(!title.isEmpty());
+        d->_titleLabelLayout->setContentsMargins(title.isEmpty() ? 0 : 10, 0, 0, 0);
     });
 
     // 主题变更
     d->_themeChangeButton = new YyToolButton(this);
     d->_themeChangeButton->setYyIcon(YyIconType::MoonStars);
     d->_themeChangeButton->setFixedSize(40, 30);
+    // 更改主题颜色
     connect(d->_themeChangeButton, &YyToolButton::clicked, this, &YyAppBar::themeChangeButtonClicked);
+    // 更改主题按钮样式
     connect(eTheme, &YyTheme::themeModeChanged, this, [=](YyThemeType::ThemeMode themeMode) {
         d->_onThemeModeChange(themeMode);
     });
@@ -157,12 +160,12 @@ YyAppBar::YyAppBar(QWidget *parent)
     QHBoxLayout* leftLayout = new QHBoxLayout();
     leftLayout->setSpacing(0);
     leftLayout->setContentsMargins(0, 0, 0, 0);
-    leftLayout->setAlignment(Qt::AlignLeft);
+    leftLayout->setAlignment(Qt::AlignLeft);//靠左
     leftLayout->addLayout(d->_createVLayout(d->_routeBackButton));
     leftLayout->addLayout(d->_createVLayout(d->_routeForwardButton));
     leftLayout->addLayout(d->_createVLayout(d->_navigationButton));
     leftLayout->addLayout(d->_iconLabelLayout);
-    leftLayout->addLayout(d->_titlYybelLayout);
+    leftLayout->addLayout(d->_titleLabelLayout);
     d->_mainLayout->addLayout(leftLayout);
 
     auto leftAreaWidget = new QWidget(this);

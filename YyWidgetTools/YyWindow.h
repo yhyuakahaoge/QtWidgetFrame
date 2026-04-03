@@ -30,6 +30,8 @@ public:
     void moveToCenter();
     void setCustomWidget(YyAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr, const QString& hitTestFunctionName = "");
     QWidget* getCustomWidget(YyAppBarType::CustomArea customArea) const;
+    void setWindowPixmap(YyThemeType::ThemeMode themeMode, const QPixmap& pixmap);
+    QPixmap getWindowPixmap(YyThemeType::ThemeMode themeMode) const;
 
 Q_SIGNALS:
     Q_SIGNAL void userInfoCardClicked();
@@ -39,6 +41,10 @@ Q_SIGNALS:
     Q_SIGNAL void centralCustomWidgetChanged();
     Q_SIGNAL void customMenuChanged();
     Q_SIGNAL void pageOpenInNewWindow(QString nodeKey);
+
+protected:
+    virtual bool eventFilter(QObject* watched, QEvent* event) override;
+    virtual void paintEvent(QPaintEvent* event) override;
 };
 
 #endif // YYWINDOW_H

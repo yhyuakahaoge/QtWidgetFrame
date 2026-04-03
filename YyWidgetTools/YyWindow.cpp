@@ -14,7 +14,8 @@
 #include <QStyleOption>
 #include <QToolBar>
 #include <QtMath>
-
+#include "YyTheme.h"
+#include "YyApplication.h"
 Q_PROPERTY_CREATE_Q_CPP(YyWindow, int, ThemeChangeTime)
 //Q_PROPERTY_CREATE_Q_CPP(YyWindow, YyWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(YyWindow, d_func()->_appBar);
@@ -30,11 +31,33 @@ YyWindow::YyWindow(QWidget* parent)
     d->_appBar = new YyAppBar(this);
     d->_appBar->setWindowButtonFlag(YyAppBarType::NavigationButtonHint);
 
+    // 主题变更动画
+    d->_themeMode = eTheme->getThemeMode();
+    connect(eTheme, &YyTheme::themeModeChanged, d, &YyWindowPrivate::onThemeModeChanged);
+    connect(d->_appBar, &YyAppBar::themeChangeButtonClicked, d, &YyWindowPrivate::onThemeReadyChange);
+    d->_isInitFinished = true;
+
+    eApp->syncWindowDisplayMode(this);
+    d->_windowDisplayMode = eApp->getWindowDisplayMode();
+    connect(eApp, &YyApplication::pWindowDisplayModeChanged, d, &YyWindowPrivate::onWindowDisplayModeChanged);
+
+    d->_pWindowPaintMode = YyWindowType::PaintMode::Normal;
+    d->_lightWindowPix = new QPixmap();
+    d->_darkWindowPix = new QPixmap();
+
+    d->_windowPaintMovie = new QMovie(this);
+    connect(d->_windowPaintMovie, &QMovie::frameChanged, this, [=]() {
+        update();
+    });
 }
 
 YyWindow::~YyWindow()
 {
-
+    Q_D(YyWindow);
+    eApp->syncWindowDisplayMode(this, false);
+    delete this->style();
+    delete d->_lightWindowPix;
+    delete d->_darkWindowPix;
 }
 
 //Q_PROPERTY_CREATE_Q_H(bool, IsStayTop)
@@ -120,6 +143,7 @@ YyWindowType::PaintMode YyWindow::getWindowPaintMode() const
 }
 //Q_PROPERTY_CREATE_Q_H(YyWindowType::PaintMode, WindowPaintMode)
 
+
 void YyWindow::moveToCenter()
 {
     if (isMaximized() || isFullScreen())
@@ -139,5 +163,115 @@ void YyWindow::setCustomWidget(YyAppBarType::CustomArea customArea, QWidget *cus
     Q_D(YyWindow);
     d->_appBar->setCustomWidget(customArea, customWidget, hitTestObject, hitTestFunctionName);
     Q_EMIT customWidgetChanged();
+}
+
+void YyWindow::setWindowPixmap(YyThemeType::ThemeMode themeMode, const QPixmap &pixmap)
+{
+    Q_D(YyWindow);
+    if (themeMode == YyThemeType::ThemeMode::Light)
+    {
+        *d->_lightWindowPix = pixmap;
+    }
+    else
+    {
+        *d->_darkWindowPix = pixmap;
+    }
+    update();
+}
+
+QPixmap YyWindow::getWindowPixmap(YyThemeType::ThemeMode themeMode) const
+{
+    Q_D(const YyWindow);
+    return themeMode == YyThemeType::Light ? *d->_lightWindowPix : *d->_darkWindowPix;
+}
+
+bool YyWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_D(YyWindow);
+    switch (event->type())
+    {
+    case QEvent::Resize:
+    {
+        //d->_doNavigationDisplayModeChange();
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
+    return QMainWindow::eventFilter(watched, event);
+}
+
+
+void YyWindow::paintEvent(QPaintEvent* event)
+{
+    Q_D(YyWindow);
+    QPainter painter(this);
+    painter.save();
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    switch (d->_windowDisplayMode)
+    {
+    case YyApplicationType::Normal:
+    {
+        switch (d->_pWindowPaintMode)
+        {
+        case YyWindowType::Normal:
+        {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(YyThemeColor(d->_themeMode, WindowBase));
+            painter.drawRect(rect());
+            break;
+        }
+        case YyWindowType::Pixmap:
+        {
+            QPixmap* pix = d->_themeMode == YyThemeType::Light ? d->_lightWindowPix : d->_darkWindowPix;
+            qreal windowAspectRatio = (qreal)rect().width() / rect().height();
+            qreal pixAspectRatio = (qreal)pix->width() / pix->height();
+            int targetPixWidth, targetPixHeight;
+            if (windowAspectRatio < pixAspectRatio)
+            {
+                targetPixWidth = qRound(pix->width() * windowAspectRatio / pixAspectRatio);
+                targetPixHeight = pix->height();
+            }
+            else
+            {
+                targetPixWidth = pix->width();
+                targetPixHeight = qRound(pix->height() * pixAspectRatio / windowAspectRatio);
+            }
+            painter.drawPixmap(rect(), *pix, QRect((pix->width() - targetPixWidth) / 2, (pix->height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
+            break;
+        }
+        case YyWindowType::Movie:
+        {
+            QPixmap pix = d->_windowPaintMovie->currentPixmap();
+            qreal windowAspectRatio = (qreal)rect().width() / rect().height();
+            qreal pixAspectRatio = (qreal)pix.width() / pix.height();
+            int targetPixWidth, targetPixHeight;
+            if (windowAspectRatio < pixAspectRatio)
+            {
+                targetPixWidth = qRound(pix.width() * windowAspectRatio / pixAspectRatio);
+                targetPixHeight = pix.height();
+            }
+            else
+            {
+                targetPixWidth = pix.width();
+                targetPixHeight = qRound(pix.height() * pixAspectRatio / windowAspectRatio);
+            }
+            painter.drawPixmap(rect(), pix, QRect((pix.width() - targetPixWidth) / 2, (pix.height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
+            break;
+        }
+        default:
+        {
+            break;
+        }
+        }
+    }
+    default:
+    {
+        break;
+    }
+    }
+    painter.restore();
 }
 

@@ -247,9 +247,9 @@ int YyAppBarPrivate::_calculateMinimumWidth()
 {
     Q_Q(YyAppBar);
     int width = 0;
-    if (_titlYybel->isVisible())
+    if (_titleLabel->isVisible())
     {
-        width += _titlYybel->width();
+        width += _titleLabel->width();
         width += 10;
     }
     if (_iconLabel->isVisible())
@@ -305,7 +305,7 @@ QVBoxLayout* YyAppBarPrivate::_createVLayout(QWidget* widget)
     QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->setSpacing(0);
-    if (widget == _iconLabel || widget == _titlYybel)
+    if (widget == _iconLabel || widget == _titleLabel)
     {
         vLayout->addSpacing(6);
     }

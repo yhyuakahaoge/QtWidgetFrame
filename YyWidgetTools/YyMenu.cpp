@@ -142,7 +142,7 @@ void YyMenu::showEvent(QShowEvent* event)
     {
         d->_animationPix = QPixmap();
     }
-    d->_animationPix = this->grab(this->rect());
+    d->_animationPix = this->grab(this->rect());//获取Menu的截图
     QPropertyAnimation* posAnimation = new QPropertyAnimation(d, "pAnimationImagePosY");
     connect(posAnimation, &QPropertyAnimation::finished, this, [=]() {
         d->_animationPix = QPixmap();
@@ -187,6 +187,7 @@ void YyMenu::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::Antialiasing);
     if (!d->_animationPix.isNull())
     {
+        //专门画菜单动画
         painter.drawPixmap(QRect(0, d->_pAnimationImagePosY, width(), height()), d->_animationPix);
     }
     else
