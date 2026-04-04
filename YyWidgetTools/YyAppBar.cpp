@@ -89,7 +89,7 @@ YyAppBar::YyAppBar(QWidget *parent)
     });
     connect(this, &YyAppBar::pIsStayTopChanged, d, &YyAppBarPrivate::onStayTopButtonClicked);
 
-    //图标
+    // 图标
     d->_iconLabel = new QLabel(this);
     d->_iconLabelLayout = d->_createVLayout(d->_iconLabel);
     if (parent->windowIcon().isNull())
@@ -396,18 +396,18 @@ void YyAppBar::closeWindow()
     closeOpacityAnimation->setEndValue(0);
     closeOpacityAnimation->setEasingCurve(QEasingCurve::InOutSine);
     closeOpacityAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    if (window()->isMaximized() || window()->isFullScreen() || d->_pIsFixedSize)
-    {
-        return;
-    }
-    QPropertyAnimation* geometryAnimation = new QPropertyAnimation(window(), "geometry");
-    QRect geometry = window()->geometry();
-    geometryAnimation->setStartValue(geometry);
-    qreal targetWidth = (geometry.width() - d->_lastMinTrackWidth) * 0.7 + d->_lastMinTrackWidth;
-    qreal targetHeight = (geometry.height() - window()->minimumHeight()) * 0.7 + window()->minimumHeight();
-    geometryAnimation->setEndValue(QRectF(geometry.center().x() - targetWidth / 2, geometry.center().y() - targetHeight / 2, targetWidth, targetHeight));
-    geometryAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    geometryAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    // if (window()->isMaximized() || window()->isFullScreen() || d->_pIsFixedSize)
+    // {
+    //     return;
+    // }
+    // QPropertyAnimation* geometryAnimation = new QPropertyAnimation(window(), "geometry");
+    // QRect geometry = window()->geometry();
+    // geometryAnimation->setStartValue(geometry);
+    // qreal targetWidth = (geometry.width() - d->_lastMinTrackWidth) * 0.7 + d->_lastMinTrackWidth;
+    // qreal targetHeight = (geometry.height() - window()->minimumHeight()) * 0.7 + window()->minimumHeight();
+    // geometryAnimation->setEndValue(QRectF(geometry.center().x() - targetWidth / 2, geometry.center().y() - targetHeight / 2, targetWidth, targetHeight));
+    // geometryAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    // geometryAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 #ifdef Q_OS_WIN
@@ -601,10 +601,10 @@ int YyAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, lo
         ::GetClientRect(hwnd, &clientRect);
         auto clientWidth = clientRect.right - clientRect.left;
         auto clientHeight = clientRect.bottom - clientRect.top;
-        bool left = nativeLocalPos.x < d->_win7Margins;
-        bool right = nativeLocalPos.x > clientWidth - d->_win7Margins;
+        bool left = nativeLocalPos.x <= d->_win7Margins;
+        bool right = nativeLocalPos.x >= clientWidth - d->_win7Margins;
         bool top = nativeLocalPos.y < d->_margins;
-        bool bottom = nativeLocalPos.y > clientHeight - d->_win7Margins;
+        bool bottom = nativeLocalPos.y >= clientHeight - d->_win7Margins;
         *result = HTNOWHERE;
         if (!d->_pIsOnlyAllowMinAndClose && !d->_pIsFixedSize && !window()->isFullScreen() && !window()->isMaximized())
         {

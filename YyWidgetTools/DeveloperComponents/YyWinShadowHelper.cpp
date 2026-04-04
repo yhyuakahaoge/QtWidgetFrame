@@ -111,6 +111,7 @@ void YyWinShadowHelper::setWindowShadow(quint64 hwnd)
     _dwmExtendFrameIntoClientArea((HWND)hwnd, &shadow);
 }
 
+//改变系统自带的标题栏
 void YyWinShadowHelper::setWindowThemeMode(quint64 hwnd, bool isLightMode)
 {
     if (!compareWindowsVersion(Win10_1809) || !_dwmSetWindowAttribute)

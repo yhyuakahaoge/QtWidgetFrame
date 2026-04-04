@@ -17,6 +17,49 @@ YyWindowPrivate::YyWindowPrivate(QObject* parent)
 {
 }
 
+YyWindowPrivate::~YyWindowPrivate()
+{
+}
+
+void YyWindowPrivate::onWMWindowClickedEvent(QVariantMap data)
+{
+    YyAppBarType::WMMouseActionType actionType = data.value("WMClickType").value<YyAppBarType::WMMouseActionType>();
+    //qDebug() << "【点击触发了！】进来了！actionType：" << actionType;
+    if (actionType == YyAppBarType::WMLBUTTONDBLCLK || actionType == YyAppBarType::WMLBUTTONUP)
+    {
+        // if (YyApplication::containsCursorToItem(_navigationBar))
+        // {
+        //     return;
+        // }
+        // if (_isNavigationBarExpanded)
+        // {
+        //     QPropertyAnimation* navigationMoveAnimation = new QPropertyAnimation(_navigationBar, "pos");
+        //     connect(navigationMoveAnimation, &QPropertyAnimation::valueChanged, this, [=]() {
+        //         if (_isNavigationDisplayModeChanged)
+        //         {
+        //             _isNavigationBarFloat = false;
+        //             _resetWindowLayout(false);
+        //             navigationMoveAnimation->deletYyter();
+        //         }
+        //     });
+        //     connect(navigationMoveAnimation, &QPropertyAnimation::finished, this, [=]() {
+        //         if (!_isNavigationDisplayModeChanged)
+        //         {
+        //             _navigationBar->setDisplayMode(YyNavigationType::Minimal, false);
+        //             _resetWindowLayout(false);
+        //         }
+        //         _isNavigationBarFloat = false;
+        //     });
+        //     navigationMoveAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        //     navigationMoveAnimation->setDuration(225);
+        //     navigationMoveAnimation->setStartValue(_navigationBar->pos());
+        //     navigationMoveAnimation->setEndValue(QPoint(-_navigationBar->width(), 0));
+        //     navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+        //     _isNavigationBarExpanded = false;
+        // }
+    }
+}
+
 void YyWindowPrivate::onThemeReadyChange()
 {
     Q_Q(YyWindow);
@@ -77,7 +120,6 @@ void YyWindowPrivate::onThemeReadyChange()
 
 void YyWindowPrivate::onThemeModeChanged(YyThemeType::ThemeMode themeMode)
 {
-    qDebug() << "ThemeMode Changed!";
     Q_Q(YyWindow);
     _themeMode = themeMode;
     if (_pWindowPaintMode == YyWindowType::PaintMode::Movie)
@@ -108,9 +150,6 @@ void YyWindowPrivate::onWindowDisplayModeChanged()
     q->update();
 }
 
-YyWindowPrivate::~YyWindowPrivate()
-{
-}
 
 qreal YyWindowPrivate::_distance(QPoint point1, QPoint point2)
 {

@@ -151,6 +151,7 @@ QRect YyApplicationPrivate::_calculateWindowVirtualGeometry(QWidget* widget)
     return rYytiveGeometry;
 }
 
+//更新云母效果
 void YyApplicationPrivate::_updateMica(QWidget* widget, bool isProcessEvent)
 {
     if (widget->isVisible())

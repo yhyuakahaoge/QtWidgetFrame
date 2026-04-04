@@ -10,6 +10,7 @@
 class YyWindow;
 class YyAppBar;
 class YyThemeAnimationWidget;
+class YyEvent;
 class YyWindowPrivate : public QObject
 {
     Q_OBJECT
@@ -18,10 +19,12 @@ class YyWindowPrivate : public QObject
     Q_PROPERTY_CREATE_D(YyWindowType::PaintMode, WindowPaintMode)
 public:
     explicit YyWindowPrivate(QObject* parent = nullptr);
+    virtual ~YyWindowPrivate() override;
     Q_SLOT void onThemeReadyChange();
+    Q_INVOKABLE void onWMWindowClickedEvent(QVariantMap data); //最小化导航栏展开时 点击客户区自动缩回动画
     Q_SLOT void onThemeModeChanged(YyThemeType::ThemeMode themeMode);
     Q_SLOT void onWindowDisplayModeChanged();
-    virtual ~YyWindowPrivate() override;
+
 
 private:
     YyThemeType::ThemeMode _themeMode;
@@ -35,6 +38,8 @@ private:
     QPixmap* _darkWindowPix;
     YyThemeAnimationWidget* _animationWidget{nullptr};
     qreal _distance(QPoint point1, QPoint point2);
+    bool _isWindowClosing{false};
+    YyEvent* _focusEvent{nullptr};
 };
 
 #endif // YYWINDOWPRIVATE_H

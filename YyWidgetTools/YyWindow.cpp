@@ -16,6 +16,7 @@
 #include <QtMath>
 #include "YyTheme.h"
 #include "YyApplication.h"
+#include "YyEventBus.h"
 Q_PROPERTY_CREATE_Q_CPP(YyWindow, int, ThemeChangeTime)
 //Q_PROPERTY_CREATE_Q_CPP(YyWindow, YyWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(YyWindow, d_func()->_appBar);
@@ -31,9 +32,18 @@ YyWindow::YyWindow(QWidget* parent)
     d->_appBar = new YyAppBar(this);
     d->_appBar->setWindowButtonFlag(YyAppBarType::NavigationButtonHint);
 
+    connect(d->_appBar, &YyAppBar::closeButtonClicked, this, &YyWindow::closeButtonClicked);
+
+    // 事件总线
+    d->_focusEvent = new YyEvent("WMWindowClicked", "onWMWindowClickedEvent", d);
+    d->_focusEvent->registerAndInit();
+
+
     // 主题变更动画
     d->_themeMode = eTheme->getThemeMode();
+    // 根据主题切换按钮得到最新的_themeMode 改变主题颜色
     connect(eTheme, &YyTheme::themeModeChanged, d, &YyWindowPrivate::onThemeModeChanged);
+    // 主题切换按钮 点击切换_themeMode
     connect(d->_appBar, &YyAppBar::themeChangeButtonClicked, d, &YyWindowPrivate::onThemeReadyChange);
     d->_isInitFinished = true;
 
@@ -55,7 +65,8 @@ YyWindow::~YyWindow()
 {
     Q_D(YyWindow);
     eApp->syncWindowDisplayMode(this, false);
-    delete this->style();
+    // 会被delete两次
+    //delete this->style();
     delete d->_lightWindowPix;
     delete d->_darkWindowPix;
 }
@@ -185,6 +196,35 @@ QPixmap YyWindow::getWindowPixmap(YyThemeType::ThemeMode themeMode) const
     return themeMode == YyThemeType::Light ? *d->_lightWindowPix : *d->_darkWindowPix;
 }
 
+void YyWindow::closeWindow()
+{
+    Q_D(YyWindow);
+    d->_isWindowClosing = true;
+    d->_appBar->closeWindow();
+}
+
+void YyWindow::setWindowMoviePath(YyThemeType::ThemeMode themeMode, const QString &moviePath)
+{
+    Q_D(YyWindow);
+    if (themeMode == YyThemeType::ThemeMode::Light)
+    {
+        d->_lightWindowMoviePath = moviePath;
+    }
+    else
+    {
+        d->_darkWindowMoviePath = moviePath;
+    }
+    if (d->_themeMode == themeMode && d->_pWindowPaintMode == YyWindowType::PaintMode::Movie)
+    {
+        if (d->_windowPaintMovie->state() == QMovie::Running)
+        {
+            d->_windowPaintMovie->stop();
+        }
+        d->_windowPaintMovie->setFileName(moviePath);
+        d->_windowPaintMovie->start();
+    }
+}
+
 bool YyWindow::eventFilter(QObject *watched, QEvent *event)
 {
     Q_D(YyWindow);
@@ -229,6 +269,7 @@ void YyWindow::paintEvent(QPaintEvent* event)
             qreal windowAspectRatio = (qreal)rect().width() / rect().height();
             qreal pixAspectRatio = (qreal)pix->width() / pix->height();
             int targetPixWidth, targetPixHeight;
+            //居中显示且保持图片比例
             if (windowAspectRatio < pixAspectRatio)
             {
                 targetPixWidth = qRound(pix->width() * windowAspectRatio / pixAspectRatio);

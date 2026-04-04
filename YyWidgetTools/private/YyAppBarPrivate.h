@@ -55,7 +55,7 @@ private:
     int _edges{0};
     int _margins{8};
     bool _isHoverMaxButton{false};
-    int _win7Margins{0};
+    int _win7Margins{2};
     QMenu *_pCustomMenu; //默认顶部栏菜单
     void _changeMaxButtonAwesome(bool isMaximized);
     void _showAppBarMenu(QPoint point);

@@ -91,16 +91,7 @@ void YyApplication::init()
 {
     Q_INIT_RESOURCE(YyWidgetTools);
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
-    int fontId = QFontDatabase::addApplicationFont(":/include/Font/YyAwesome.ttf");
-
-    if (fontId == -1) {
-        qDebug() << "字体加载失败！路径错误或文件损坏";
-    } else {
-        qDebug() << "字体加载成功！";
-    }
-
-    QString realFontName = QFontDatabase::applicationFontFamilies(fontId).first();
-    qDebug() << "字体名称 :" << realFontName;
+    QFontDatabase::addApplicationFont(":/include/Font/YyAwesome.ttf");
 
     //默认字体
     QFont font = qApp->font();

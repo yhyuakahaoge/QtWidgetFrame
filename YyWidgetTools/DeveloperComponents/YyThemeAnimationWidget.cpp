@@ -49,7 +49,7 @@ void YyThemeAnimationWidget::paintEvent(QPaintEvent* event)
     QPainter animationImagePainter(&animationImage);
     animationImagePainter.setRenderHints(QPainter::Antialiasing);
     animationImagePainter.drawImage(_pOldWindowBackground.rect(), _pOldWindowBackground);
-    // 设置混合模式
+    // 设置混合模式 源 准备画的东西 目标 已经画在控件上的东西 SourceOut 源*(1 - 目标透明分量)
     animationImagePainter.setCompositionMode(QPainter::CompositionMode::CompositionMode_SourceOut);
     qreal devicePixelRatioF = _pOldWindowBackground.devicePixelRatioF();
     QPainterPath clipPath;

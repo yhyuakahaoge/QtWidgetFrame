@@ -32,7 +32,8 @@ public:
     QWidget* getCustomWidget(YyAppBarType::CustomArea customArea) const;
     void setWindowPixmap(YyThemeType::ThemeMode themeMode, const QPixmap& pixmap);
     QPixmap getWindowPixmap(YyThemeType::ThemeMode themeMode) const;
-
+    void closeWindow();
+    void setWindowMoviePath(YyThemeType::ThemeMode themeMode, const QString& moviePath);
 Q_SIGNALS:
     Q_SIGNAL void userInfoCardClicked();
     Q_SIGNAL void closeButtonClicked();
