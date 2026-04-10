@@ -16,10 +16,10 @@ class Yy_EXPORT YyWindow : public QMainWindow
     Q_PROPERTY_CREATE_Q_H(int, ThemeChangeTime)
     //Q_PROPERTY_CREATE_Q_H(bool, IsCentralStackedWidgetTransparent)
     // Q_PROPERTY_CREATE_Q_H(bool, IsAllowPageOpenInNewWindow)
-    // Q_PROPERTY_CREATE_Q_H(bool, IsNavigationBarEnable)
-    // Q_PROPERTY_CREATE_Q_H(int, NavigationBarWidth)
+    Q_PROPERTY_CREATE_Q_H(bool, IsNavigationBarEnable)
+    Q_PROPERTY_CREATE_Q_H(int, NavigationBarWidth)
     // Q_PROPERTY_CREATE_Q_H(int, CurrentStackIndex)
-    // Q_PROPERTY_CREATE_Q_H(YyNavigationType::NavigationDisplayMode, NavigationBarDisplayMode)
+    Q_PROPERTY_CREATE_Q_H(YyNavigationType::NavigationDisplayMode, NavigationBarDisplayMode)
     // Q_PROPERTY_CREATE_Q_H(YyWindowType::StackSwitchMode, StackSwitchMode)
     Q_PROPERTY_CREATE_Q_H(YyWindowType::PaintMode, WindowPaintMode)
     Q_TAKEOVER_NATIVEEVENT_H

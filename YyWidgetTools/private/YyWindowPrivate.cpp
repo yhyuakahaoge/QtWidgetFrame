@@ -3,7 +3,7 @@
 #include "YyAppBarPrivate.h"
 #include "YyApplication.h"
 //#include "YyCentralStackedWidget.h"
-//#include "YyNavigationBar.h"
+#include "YyNavigationBar.h"
 #include "YyTheme.h"
 #include "YyThemeAnimationWidget.h"
 #include "YyWindow.h"
@@ -154,4 +154,41 @@ void YyWindowPrivate::onWindowDisplayModeChanged()
 qreal YyWindowPrivate::_distance(QPoint point1, QPoint point2)
 {
     return std::sqrt((point1.x() - point2.x()) * (point1.x() - point2.x()) + (point1.y() - point2.y()) * (point1.y() - point2.y()));
+}
+
+void YyWindowPrivate::_doNavigationDisplayModeChange()
+{
+    Q_Q(YyWindow);
+    if (_isWindowClosing || !_isNavigationEnable || !_isInitFinished)
+    {
+        return;
+    }
+    // if (_pNavigationBarDisplayMode == YyNavigationType::Minimal)
+    // {
+    //     _resetWindowLayout(false);
+    // }
+    // if (_pNavigationBarDisplayMode == YyNavigationType::Auto)
+    // {
+    //     _isNavigationDisplayModeChanged = true;
+    //     _isNavigationBarFloat = false;
+    //     _resetWindowLayout(false);
+    //     int width = q->centralWidget()->width();
+    //     if (width >= 850 && _currentNavigationBarDisplayMode != YyNavigationType::Maximal)
+    //     {
+    //         _navigationBar->setDisplayMode(YyNavigationType::Maximal);
+    //         _currentNavigationBarDisplayMode = YyNavigationType::Maximal;
+    //     }
+    //     else if (width >= 550 && width < 850 && _currentNavigationBarDisplayMode != YyNavigationType::Compact)
+    //     {
+    //         _navigationBar->setDisplayMode(YyNavigationType::Compact);
+    //         _currentNavigationBarDisplayMode = YyNavigationType::Compact;
+    //     }
+    //     else if (width < 550 && _currentNavigationBarDisplayMode != YyNavigationType::Minimal)
+    //     {
+    //         _navigationBar->setDisplayMode(YyNavigationType::Minimal);
+    //         _currentNavigationBarDisplayMode = YyNavigationType::Minimal;
+    //         _appBar->setWindowButtonFlag(YyAppBarType::NavigationButtonHint);
+    //     }
+    //     _isNavigationBarExpanded = false;
+    // }
 }

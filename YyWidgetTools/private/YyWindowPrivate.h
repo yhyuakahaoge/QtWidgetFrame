@@ -11,12 +11,17 @@ class YyWindow;
 class YyAppBar;
 class YyThemeAnimationWidget;
 class YyEvent;
+class YyNavigationBar;
+class QHBoxLayout;
+class YyCentralStackedWidget;
 class YyWindowPrivate : public QObject
 {
     Q_OBJECT
     Q_D_CREATE(YyWindow)
     Q_PROPERTY_CREATE_D(int, ThemeChangeTime)
+    Q_PROPERTY_CREATE_D(YyNavigationType::NavigationDisplayMode, NavigationBarDisplayMode)
     Q_PROPERTY_CREATE_D(YyWindowType::PaintMode, WindowPaintMode)
+
 public:
     explicit YyWindowPrivate(QObject* parent = nullptr);
     virtual ~YyWindowPrivate() override;
@@ -29,17 +34,29 @@ public:
 private:
     YyThemeType::ThemeMode _themeMode;
     YyApplicationType::WindowDisplayMode _windowDisplayMode;
-    YyAppBar* _appBar{nullptr};
-    bool _isInitFinished{false};
     QMovie* _windowPaintMovie{nullptr}; //QMovie主要显示gif
+
+    YyAppBar* _appBar{nullptr};
+    YyThemeAnimationWidget* _animationWidget{nullptr};
+    qreal _distance(QPoint point1, QPoint point2);
+
     QString _lightWindowMoviePath{""};
     QString _darkWindowMoviePath{""};
     QPixmap* _lightWindowPix;
     QPixmap* _darkWindowPix;
-    YyThemeAnimationWidget* _animationWidget{nullptr};
-    qreal _distance(QPoint point1, QPoint point2);
+
     bool _isWindowClosing{false};
+    bool _isNavigationEnable{true};
     YyEvent* _focusEvent{nullptr};
+
+    YyNavigationBar* _navigationBar{nullptr};
+    QHBoxLayout* _centerLayout{nullptr};
+    YyCentralStackedWidget* _centerStackedWidget{nullptr};
+    YyCentralStackedWidget* _navigationCenterStackedWidget{nullptr};
+    YyNavigationType::NavigationDisplayMode _currentNavigationBarDisplayMode{YyNavigationType::Maximal};
+    bool _isInitFinished{false};
+    int _contentsMargins{5};
+    void _doNavigationDisplayModeChange();
 };
 
 #endif // YYWINDOWPRIVATE_H

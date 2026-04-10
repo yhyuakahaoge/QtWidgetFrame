@@ -1,5 +1,6 @@
 #include "YyWindow.h"
 
+#include "YyWindowStyle.h"
 #include "private/YyWindowPrivate.h"
 
 #include <QApplication>
@@ -14,9 +15,13 @@
 #include <QStyleOption>
 #include <QToolBar>
 #include <QtMath>
+#include <QHBoxLayout>
 #include "YyTheme.h"
 #include "YyApplication.h"
 #include "YyEventBus.h"
+#include "YyNavigationBar.h"
+#include "YyCentralStackedWidget.h"
+#include "YyWindowStyle.h"
 Q_PROPERTY_CREATE_Q_CPP(YyWindow, int, ThemeChangeTime)
 //Q_PROPERTY_CREATE_Q_CPP(YyWindow, YyWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(YyWindow, d_func()->_appBar);
@@ -27,12 +32,40 @@ YyWindow::YyWindow(QWidget* parent)
     d->q_ptr = this;
     setProperty("YyBaseClassName", "YyWindow");
     resize(1020, 680);
+
     d->_pThemeChangeTime = 700;
+    d->_pNavigationBarDisplayMode = YyNavigationType::NavigationDisplayMode::Auto;
+
     // 自定义AppBar
     d->_appBar = new YyAppBar(this);
     d->_appBar->setWindowButtonFlag(YyAppBarType::NavigationButtonHint);
 
     connect(d->_appBar, &YyAppBar::closeButtonClicked, this, &YyWindow::closeButtonClicked);
+
+    // 导航栏
+    d->_navigationBar = new YyNavigationBar(this);
+
+    // 导航中心堆栈窗口
+    d->_navigationCenterStackedWidget = new YyCentralStackedWidget(this);
+    d->_navigationCenterStackedWidget->setContentsMargins(0, 0, 0, 0);
+    QWidget* navigationCentralWidget = new QWidget(this);
+    navigationCentralWidget->setObjectName("YyWindowNavigationCentralWidget");
+    navigationCentralWidget->setStyleSheet("#YyWindowNavigationCentralWidget{background-color:transparent;}");
+    navigationCentralWidget->installEventFilter(this);
+    d->_centerLayout = new QHBoxLayout(navigationCentralWidget);
+    d->_centerLayout->setSpacing(5);
+    d->_centerLayout->addWidget(d->_navigationBar);
+    d->_centerLayout->addWidget(d->_navigationCenterStackedWidget);
+    d->_centerLayout->setContentsMargins(d->_contentsMargins, 0, 0, 0);
+
+    // 中心堆栈窗口
+    d->_centerStackedWidget = new YyCentralStackedWidget(this);
+    d->_centerStackedWidget->setIsTransparent(true);
+    d->_centerStackedWidget->getContainerStackedWidget()->addWidget(navigationCentralWidget);
+    setCentralWidget(d->_centerStackedWidget);
+    setObjectName("YyWindow");
+    setStyleSheet("#YyWindow{background-color:transparent;}");
+    setStyle(new YyWindowStyle(style()));
 
     // 事件总线
     d->_focusEvent = new YyEvent("WMWindowClicked", "onWMWindowClickedEvent", d);
@@ -47,6 +80,7 @@ YyWindow::YyWindow(QWidget* parent)
     connect(d->_appBar, &YyAppBar::themeChangeButtonClicked, d, &YyWindowPrivate::onThemeReadyChange);
     d->_isInitFinished = true;
 
+    // 注册widget到_micaWidgetList中 用于更新YyMica效果
     eApp->syncWindowDisplayMode(this);
     d->_windowDisplayMode = eApp->getWindowDisplayMode();
     connect(eApp, &YyApplication::pWindowDisplayModeChanged, d, &YyWindowPrivate::onWindowDisplayModeChanged);
@@ -169,6 +203,20 @@ void YyWindow::moveToCenter()
     setGeometry((geometry.left() + geometry.right() - width()) / 2, (geometry.top() + geometry.bottom() - height()) / 2, width(), height());
 }
 
+void YyWindow::setIsNavigationBarEnable(bool isVisible)
+{
+    Q_D(YyWindow);
+    d->_isNavigationEnable = isVisible;
+    d->_navigationBar->setVisible(isVisible);
+    d->_centerLayout->setContentsMargins(isVisible ? d->_contentsMargins : 0, 0, 0, 0);
+    //d->_navigationCenterStackedWidget->setIsHasRadius(isVisible);
+}
+
+bool YyWindow::getIsNavigationBarEnable() const
+{
+    return d_ptr->_isNavigationEnable;
+}
+
 void YyWindow::setCustomWidget(YyAppBarType::CustomArea customArea, QWidget *customWidget, QObject *hitTestObject, const QString &hitTestFunctionName)
 {
     Q_D(YyWindow);
@@ -201,6 +249,57 @@ void YyWindow::closeWindow()
     Q_D(YyWindow);
     d->_isWindowClosing = true;
     d->_appBar->closeWindow();
+}
+
+void YyWindow::setNavigationBarWidth(int navigationBarWidth)
+{
+    Q_D(YyWindow);
+    d->_navigationBar->setNavigationBarWidth(navigationBarWidth);
+    Q_EMIT pNavigationBarWidthChanged();
+}
+
+int YyWindow::getNavigationBarWidth() const
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->getNavigationBarWidth();
+}
+
+void YyWindow::setNavigationBarDisplayMode(YyNavigationType::NavigationDisplayMode navigationBarDisplayMode)
+{
+    Q_D(YyWindow);
+    d->_pNavigationBarDisplayMode = navigationBarDisplayMode;
+    d->_currentNavigationBarDisplayMode = d->_pNavigationBarDisplayMode;
+    bool isVisible = this->isVisible();
+    switch (d->_pNavigationBarDisplayMode)
+    {
+    case YyNavigationType::Auto:
+    {
+        d->_doNavigationDisplayModeChange();
+        break;
+    }
+    case YyNavigationType::Minimal:
+    {
+        //d->_navigationBar->setDisplayMode(YyNavigationType::Minimal, isVisible);
+        break;
+    }
+    case YyNavigationType::Compact:
+    {
+        //d->_navigationBar->setDisplayMode(YyNavigationType::Compact, isVisible);
+        break;
+    }
+    case YyNavigationType::Maximal:
+    {
+        //d->_navigationBar->setDisplayMode(YyNavigationType::Maximal, isVisible);
+        break;
+    }
+    }
+    Q_EMIT pNavigationBarDisplayModeChanged();
+}
+
+YyNavigationType::NavigationDisplayMode YyWindow::getNavigationBarDisplayMode() const
+{
+    Q_D(const YyWindow);
+    return d->_pNavigationBarDisplayMode;
 }
 
 void YyWindow::setWindowMoviePath(YyThemeType::ThemeMode themeMode, const QString &moviePath)
