@@ -45,6 +45,7 @@ YyText::~YyText()
 void YyText::setIsWrapAnywhere(bool isWrapAnywhere)
 {
     Q_D(YyText);
+    // 自动换行
     setWordWrap(isWrapAnywhere);
     d->_isWrapAnywhere = isWrapAnywhere;
 }

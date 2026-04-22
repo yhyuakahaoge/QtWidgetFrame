@@ -28,12 +28,45 @@ public:
     virtual ~YyWindow() override;
 
     void moveToCenter();
+
     void setCustomWidget(YyAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr, const QString& hitTestFunctionName = "");
     QWidget* getCustomWidget(YyAppBarType::CustomArea customArea) const;
     void setWindowPixmap(YyThemeType::ThemeMode themeMode, const QPixmap& pixmap);
     QPixmap getWindowPixmap(YyThemeType::ThemeMode themeMode) const;
-    void closeWindow();
     void setWindowMoviePath(YyThemeType::ThemeMode themeMode, const QString& moviePath);
+
+    void setUserInfoCardVisible(bool isVisible);
+    void setUserInfoCardPixmap(QPixmap pix);
+    void setUserInfoCardTitle(QString title);
+    void setUserInfoCardSubTitle(QString subTitle);
+
+    void setCentralCustomWidget(QWidget* customWidget);
+    QWidget* getCentralCustomWidget() const;
+
+    void setCustomMenu(QMenu* customMenu);
+    QMenu* getCustomMenu() const;
+
+    YyNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, YyIconType::IconName awesome = YyIconType::None) const;
+    YyNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, YyIconType::IconName awesome = YyIconType::None) const;
+    YyNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, YyIconType::IconName awesome = YyIconType::None);
+    YyNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, int keyPoints, YyIconType::IconName awesome = YyIconType::None);
+    YyNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, YyIconType::IconName awesome = YyIconType::None);
+    YyNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, int keyPoints, YyIconType::IconName awesome = YyIconType::None);
+    YyNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints = 0, YyIconType::IconName awesome = YyIconType::None) const;
+    YyNavigationType::NodeResult addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey, int keyPoints = 0, YyIconType::IconName awesome = YyIconType::None);
+    YyNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey);
+    YyNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey);
+
+    void addCentralWidget(QWidget* centralWidget);
+    QWidget* getCentralWidget(int index) const;
+
+    bool getNavigationNodeIsExpanded(QString expanderKey) const;
+    void expandNavigationNode(QString expanderKey);
+    void collapseNavigationNode(QString expanderKey);
+    void removeNavigationNode(QString nodeKey) const;
+    int getPageOpenInNewWindowCount(QString nodeKey) const;
+
+    void closeWindow();
 Q_SIGNALS:
     Q_SIGNAL void userInfoCardClicked();
     Q_SIGNAL void closeButtonClicked();
@@ -45,6 +78,7 @@ Q_SIGNALS:
 
 protected:
     virtual bool eventFilter(QObject* watched, QEvent* event) override;
+    virtual QMenu* createPopupMenu() override;
     virtual void paintEvent(QPaintEvent* event) override;
 };
 

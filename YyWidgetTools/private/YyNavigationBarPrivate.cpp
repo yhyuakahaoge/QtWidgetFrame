@@ -1,18 +1,18 @@
 ﻿#include "YyNavigationBarPrivate.h"
 #include "YyApplication.h"
 #include "YyBaseListView.h"
-// #include "YyCustomTabWidget.h"
-// #include "YyCustomWidget.h"
-// #include "YyFooterDelegate.h"
-// #include "YyFooterModel.h"
-// #include "YyIconButton.h"
-// #include "YyInteractiveCard.h"
-// #include "YyMenu.h"
-// #include "YyNavigationBar.h"
-// #include "YyNavigationModel.h"
-// #include "YyNavigationNode.h"
+#include "YyCustomTabWidget.h"
+#include "YyCustomWidget.h"
+#include "YyFooterDelegate.h"
+#include "YyFooterModel.h"
+#include "YyIconButton.h"
+#include "YyInteractiveCard.h"
+#include "YyMenu.h"
+#include "YyNavigationBar.h"
+#include "YyNavigationModel.h"
+#include "YyNavigationNode.h"
 // #include "YyNavigationRouter.h"
-// #include "YyNavigationView.h"
+#include "YyNavigationView.h"
 #include "YyToolButton.h"
 #include <QApplication>
 #include <QDebug>
@@ -30,27 +30,27 @@ YyNavigationBarPrivate::~YyNavigationBarPrivate()
 {
 }
 
-// void YyNavigationBarPrivate::onNavigationOpenNewWindow(QString nodeKey)
-// {
-//     // Q_Q(YyNavigationBar);
-//     // const QMetaObject* meta = _pageMetaMap.value(nodeKey);
-//     // if (!meta)
-//     // {
-//     //     return;
-//     // }
-//     // QWidget* widget = dynamic_cast<QWidget*>(meta->newInstance());
-//     // if (widget)
-//     // {
-//     //     widget->setProperty("YyPageKey", nodeKey);
-//     //     widget->setProperty("IsMetaWidget", true);
-//     //     widget->setProperty("YyFloatParentWidget", QVariant::fromValue(q));
-//     //     widget->installEventFilter(this);
-//     //     YyCustomTabWidget* floatWidget = new YyCustomTabWidget(q);
-//     //     floatWidget->addTab(widget, widget->windowIcon(), widget->windowTitle());
-//     //     floatWidget->show();
-//     //     Q_EMIT q->pageOpenInNewWindow(nodeKey);
-//     // }
-// }
+void YyNavigationBarPrivate::onNavigationOpenNewWindow(QString nodeKey)
+{
+    Q_Q(YyNavigationBar);
+    const QMetaObject* meta = _pageMetaMap.value(nodeKey);
+    if (!meta)
+    {
+        return;
+    }
+    QWidget* widget = dynamic_cast<QWidget*>(meta->newInstance());
+    if (widget)
+    {
+        widget->setProperty("YyPageKey", nodeKey);
+        widget->setProperty("IsMetaWidget", true);
+        widget->setProperty("YyFloatParentWidget", QVariant::fromValue(q));
+        widget->installEventFilter(this);
+        YyCustomTabWidget* floatWidget = new YyCustomTabWidget(q);
+        floatWidget->addTab(widget, widget->windowIcon(), widget->windowTitle());
+        floatWidget->show();
+        Q_EMIT q->pageOpenInNewWindow(nodeKey);
+    }
+}
 
 // void YyNavigationBarPrivate::onNavigationRoute(QVariantMap routeData)
 // {
@@ -60,171 +60,172 @@ YyNavigationBarPrivate::~YyNavigationBarPrivate()
 //     // q->navigation(pageKey, false, isRouteBack);
 // }
 
-// void YyNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
-// {
-//     // Q_Q(YyNavigationBar);
-//     // if (index.isValid())
-//     // {
-//     //     YyNavigationNode* node = static_cast<YyNavigationNode*>(index.internalPointer());
-//     //     if (!node)
-//     //     {
-//     //         return;
-//     //     }
-//     //     if (node->getIsCategoryNode())
-//     //     {
-//     //         Q_EMIT q->navigationNodeClicked(YyNavigationType::CategoryNode, node->getNodeKey(), isRouteBack);
-//     //         return;
-//     //     }
-//     //     if (node->getIsExpanderNode())
-//     //     {
-//     //         _expandOrCollapseExpanderNode(node, !_navigationView->isExpanded(index));
-//     //     }
-//     //     else
-//     //     {
-//     //         if (node->getKeyPoints())
-//     //         {
-//     //             node->setKeyPoints(0);
-//     //             _navigationView->update();
-//     //         }
-//     //         YyNavigationNode* selectedNode = _navigationModel->getSelectedNode();
-//     //         if (selectedNode != node)
-//     //         {
-//     //             // 记录跳转
-//     //             if (isLogRoute)
-//     //             {
-//     //                 QVariantMap routeData = QVariantMap();
-//     //                 QString backPageKey;
-//     //                 if (selectedNode)
-//     //                 {
-//     //                     backPageKey = selectedNode->getNodeKey();
-//     //                 }
-//     //                 else
-//     //                 {
-//     //                     if (_footerModel->getSelectedNode())
-//     //                     {
-//     //                         backPageKey = _footerModel->getSelectedNode()->getNodeKey();
-//     //                     }
-//     //                 }
-//     //                 routeData.insert("YyBackPageKey", backPageKey);
-//     //                 routeData.insert("YyForwardPageKey", node->getNodeKey());
-//     //                 YyNavigationRouter::getInstance()->navigationRoute(this, "onNavigationRoute", routeData);
-//     //             }
-//     //             Q_EMIT q->navigationNodeClicked(YyNavigationType::PageNode, node->getNodeKey(), isRouteBack);
+// NavigationModel在addNode时默认将第一个node设置为selectedNode
+void YyNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
+{
+    Q_Q(YyNavigationBar);
+    if (index.isValid())
+    {
+        YyNavigationNode* node = static_cast<YyNavigationNode*>(index.internalPointer());
+        if (!node)
+        {
+            return;
+        }
+        if (node->getIsCategoryNode())
+        {
+            Q_EMIT q->navigationNodeClicked(YyNavigationType::CategoryNode, node->getNodeKey(), isRouteBack);
+            return;
+        }
+        if (node->getIsExpanderNode())
+        {
+            _expandOrCollapseExpanderNode(node, !_navigationView->isExpanded(index));
+        }
+        else
+        {
+            if (node->getKeyPoints())
+            {
+                node->setKeyPoints(0);
+                _navigationView->update();
+            }
+            YyNavigationNode* selectedNode = _navigationModel->getSelectedNode();
+            if (selectedNode != node)
+            {
+                // 记录跳转
+                // if (isLogRoute)
+                // {
+                //     QVariantMap routeData = QVariantMap();
+                //     QString backPageKey;
+                //     if (selectedNode)
+                //     {
+                //         backPageKey = selectedNode->getNodeKey();
+                //     }
+                //     else
+                //     {
+                //         if (_footerModel->getSelectedNode())
+                //         {
+                //             backPageKey = _footerModel->getSelectedNode()->getNodeKey();
+                //         }
+                //     }
+                //     routeData.insert("YyBackPageKey", backPageKey);
+                //     routeData.insert("YyForwardPageKey", node->getNodeKey());
+                //     YyNavigationRouter::getInstance()->navigationRoute(this, "onNavigationRoute", routeData);
+                // }
+                // Q_EMIT q->navigationNodeClicked(YyNavigationType::PageNode, node->getNodeKey(), isRouteBack);
 
-//     //             if (_footerModel->getSelectedNode())
-//     //             {
-//     //                 _footerView->clearSelection();
-//     //                 QVariantMap footerPostData = QVariantMap();
-//     //                 footerPostData.insert("SelectMarkChanged", true);
-//     //                 footerPostData.insert("LastSelectedNode", QVariant::fromValue(_footerModel->getSelectedNode()));
-//     //                 footerPostData.insert("SelectedNode", QVariant::fromValue(nullptr));
-//     //                 _footerModel->setSelectedNode(nullptr);
-//     //                 _footerDelegate->navigationNodeStateChange(footerPostData);
-//     //             }
-//     //             QVariantMap postData = QVariantMap();
-//     //             postData.insert("SelectMarkChanged", true);
-//     //             if (_navigationModel->getSelectedExpandedNode())
-//     //             {
-//     //                 postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
-//     //             }
-//     //             else
-//     //             {
-//     //                 postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedNode()));
-//     //             }
-//     //             if (_currentDisplayMode == YyNavigationType::Compact)
-//     //             {
-//     //                 YyNavigationNode* originNode = node->getOriginalNode();
-//     //                 if (originNode == node)
-//     //                 {
-//     //                     postData.insert("SelectedNode", QVariant::fromValue(node));
-//     //                 }
-//     //                 else
-//     //                 {
-//     //                     if (originNode == _navigationModel->getSelectedExpandedNode())
-//     //                     {
-//     //                         _navigationModel->setSelectedNode(node);
-//     //                         _resetNodeSelected();
-//     //                         return;
-//     //                     }
-//     //                     _navigationModel->setSelectedExpandedNode(originNode);
-//     //                     postData.insert("SelectedNode", QVariant::fromValue(originNode));
-//     //                 }
-//     //             }
-//     //             else
-//     //             {
-//     //                 postData.insert("SelectedNode", QVariant::fromValue(node));
-//     //             }
-//     //             _navigationModel->setSelectedNode(node);
-//     //             _navigationView->navigationNodeStateChange(postData);
-//     //             if (!node->getIsVisible() && _currentDisplayMode != YyNavigationType::Compact)
-//     //             {
-//     //                 _expandSelectedNodeParent();
-//     //             }
-//     //         }
-//     //     }
-//     //     _resetNodeSelected();
-//     // }
-// }
+                if (_footerModel->getSelectedNode())
+                {
+                    _footerView->clearSelection();
+                    QVariantMap footerPostData = QVariantMap();
+                    footerPostData.insert("SelectMarkChanged", true);
+                    footerPostData.insert("LastSelectedNode", QVariant::fromValue(_footerModel->getSelectedNode()));
+                    footerPostData.insert("SelectedNode", QVariant::fromValue(nullptr));
+                    _footerModel->setSelectedNode(nullptr);
+                    _footerDelegate->navigationNodeStateChange(footerPostData);
+                }
+                QVariantMap postData = QVariantMap();
+                postData.insert("SelectMarkChanged", true);
+                if (_navigationModel->getSelectedExpandedNode())
+                {
+                    postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
+                }
+                else
+                {
+                    postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedNode()));
+                }
+                if (_currentDisplayMode == YyNavigationType::Compact)
+                {
+                    YyNavigationNode* originNode = node->getOriginalNode();
+                    if (originNode == node)
+                    {
+                        postData.insert("SelectedNode", QVariant::fromValue(node));
+                    }
+                    else
+                    {
+                        if (originNode == _navigationModel->getSelectedExpandedNode())
+                        {
+                            _navigationModel->setSelectedNode(node);
+                            _resetNodeSelected();
+                            return;
+                        }
+                        _navigationModel->setSelectedExpandedNode(originNode);
+                        postData.insert("SelectedNode", QVariant::fromValue(originNode));
+                    }
+                }
+                else
+                {
+                    postData.insert("SelectedNode", QVariant::fromValue(node));
+                }
+                _navigationModel->setSelectedNode(node);
+                _navigationView->navigationNodeStateChange(postData);
+                if (!node->getIsVisible() && _currentDisplayMode != YyNavigationType::Compact)
+                {
+                    _expandSelectedNodeParent();
+                }
+            }
+        }
+        _resetNodeSelected();
+    }
+}
 
-// void YyNavigationBarPrivate::onFooterViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
-// {
-//     // Q_Q(YyNavigationBar);
-//     // YyNavigationNode* node = index.data(Qt::UserRole).value<YyNavigationNode*>();
-//     // if (node->getKeyPoints())
-//     // {
-//     //     node->setKeyPoints(0);
-//     //     _navigationView->update();
-//     // }
-//     // YyNavigationNode* selectedNode = _footerModel->getSelectedNode();
+void YyNavigationBarPrivate::onFooterViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
+{
+    Q_Q(YyNavigationBar);
+    YyNavigationNode* node = index.data(Qt::UserRole).value<YyNavigationNode*>();
+    if (node->getKeyPoints())
+    {
+        node->setKeyPoints(0);
+        _navigationView->update();
+    }
+    YyNavigationNode* selectedNode = _footerModel->getSelectedNode();
 
-//     // if (selectedNode != node)
-//     // {
-//     //     // 记录跳转
-//     //     if (isLogRoute && node->getIsHasFooterPage())
-//     //     {
-//     //         QVariantMap routeData = QVariantMap();
-//     //         QString backPageKey;
-//     //         if (selectedNode)
-//     //         {
-//     //             backPageKey = selectedNode->getNodeKey();
-//     //         }
-//     //         else
-//     //         {
-//     //             if (_navigationModel->getSelectedNode())
-//     //             {
-//     //                 backPageKey = _navigationModel->getSelectedNode()->getNodeKey();
-//     //             }
-//     //         }
-//     //         routeData.insert("YyBackPageKey", backPageKey);
-//     //         routeData.insert("YyForwardPageKey", node->getNodeKey());
-//     //         YyNavigationRouter::getInstance()->navigationRoute(this, "onNavigationRoute", routeData);
-//     //     }
-//     //     Q_EMIT q->navigationNodeClicked(YyNavigationType::FooterNode, node->getNodeKey(), isRouteBack);
+    if (selectedNode != node)
+    {
+        // 记录跳转
+        // if (isLogRoute && node->getIsHasFooterPage())
+        // {
+        //     QVariantMap routeData = QVariantMap();
+        //     QString backPageKey;
+        //     if (selectedNode)
+        //     {
+        //         backPageKey = selectedNode->getNodeKey();
+        //     }
+        //     else
+        //     {
+        //         if (_navigationModel->getSelectedNode())
+        //         {
+        //             backPageKey = _navigationModel->getSelectedNode()->getNodeKey();
+        //         }
+        //     }
+        //     routeData.insert("YyBackPageKey", backPageKey);
+        //     routeData.insert("YyForwardPageKey", node->getNodeKey());
+        //     YyNavigationRouter::getInstance()->navigationRoute(this, "onNavigationRoute", routeData);
+        // }
+        // Q_EMIT q->navigationNodeClicked(YyNavigationType::FooterNode, node->getNodeKey(), isRouteBack);
 
-//     //     if (node->getIsHasFooterPage())
-//     //     {
-//     //         if (_navigationModel->getSelectedNode() || _navigationModel->getSelectedExpandedNode())
-//     //         {
-//     //             QVariantMap mainPostData = QVariantMap();
-//     //             mainPostData.insert("SelectMarkChanged", true);
-//     //             mainPostData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode() ? _navigationModel->getSelectedExpandedNode() : _navigationModel->getSelectedNode()));
-//     //             mainPostData.insert("SelectedNode", QVariant::fromValue(nullptr));
-//     //             _navigationView->clearSelection();
-//     //             _navigationView->navigationNodeStateChange(mainPostData);
-//     //             _navigationModel->setSelectedExpandedNode(nullptr);
-//     //             _navigationModel->setSelectedNode(nullptr);
-//     //         }
-//     //         _footerView->clearSelection();
-//     //         _footerView->selectionModel()->select(index, QItemSelectionModel::Select);
-//     //         QVariantMap postData = QVariantMap();
-//     //         postData.insert("SelectMarkChanged", true);
-//     //         postData.insert("LastSelectedNode", QVariant::fromValue(_footerModel->getSelectedNode()));
-//     //         postData.insert("SelectedNode", QVariant::fromValue(node));
-//     //         _footerDelegate->navigationNodeStateChange(postData);
-//     //         _footerModel->setSelectedNode(node);
-//     //     }
-//     // }
-// }
+        if (node->getIsHasFooterPage())
+        {
+            if (_navigationModel->getSelectedNode() || _navigationModel->getSelectedExpandedNode())
+            {
+                QVariantMap mainPostData = QVariantMap();
+                mainPostData.insert("SelectMarkChanged", true);
+                mainPostData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode() ? _navigationModel->getSelectedExpandedNode() : _navigationModel->getSelectedNode()));
+                mainPostData.insert("SelectedNode", QVariant::fromValue(nullptr));
+                _navigationView->clearSelection();
+                _navigationView->navigationNodeStateChange(mainPostData);
+                _navigationModel->setSelectedExpandedNode(nullptr);
+                _navigationModel->setSelectedNode(nullptr);
+            }
+            _footerView->clearSelection();
+            _footerView->selectionModel()->select(index, QItemSelectionModel::Select);
+            QVariantMap postData = QVariantMap();
+            postData.insert("SelectMarkChanged", true);
+            postData.insert("LastSelectedNode", QVariant::fromValue(_footerModel->getSelectedNode()));
+            postData.insert("SelectedNode", QVariant::fromValue(node));
+            _footerDelegate->navigationNodeStateChange(postData);
+            _footerModel->setSelectedNode(node);
+        }
+    }
+}
 
 bool YyNavigationBarPrivate::eventFilter(QObject* watched, QEvent* event)
 {
@@ -235,7 +236,7 @@ bool YyNavigationBarPrivate::eventFilter(QObject* watched, QEvent* event)
         QString nodeKey = watched->property("YyPageKey").toString();
         if (!nodeKey.isNull())
         {
-            //_pageNewWindowCountMap[nodeKey] += 1;
+            _pageNewWindowCountMap[nodeKey] += 1;
         }
         break;
     }
@@ -244,7 +245,7 @@ bool YyNavigationBarPrivate::eventFilter(QObject* watched, QEvent* event)
         QString nodeKey = watched->property("YyPageKey").toString();
         if (!nodeKey.isNull())
         {
-           // _pageNewWindowCountMap[nodeKey] -= 1;
+           _pageNewWindowCountMap[nodeKey] -= 1;
         }
         break;
     }
@@ -256,170 +257,172 @@ bool YyNavigationBarPrivate::eventFilter(QObject* watched, QEvent* event)
     return QObject::eventFilter(watched, event);
 }
 
-// void YyNavigationBarPrivate::_initNodeModelIndex(const QModelIndex& parentIndex)
-// {
-//     // int rowCount = _navigationModel->rowCount(parentIndex);
-//     // for (int row = 0; row < rowCount; ++row)
-//     // {
-//     //     QModelIndex index = _navigationModel->index(row, 0, parentIndex);
-//     //     YyNavigationNode* childNode = static_cast<YyNavigationNode*>(index.internalPointer());
-//     //     childNode->setModelIndex(index);
-//     //     if (_navigationModel->hasChildren(index))
-//     //     {
-//     //         _initNodeModelIndex(index);
-//     //     }
-//     // }
-// }
+void YyNavigationBarPrivate::_initNodeModelIndex(const QModelIndex& parentIndex)
+{
+    int rowCount = _navigationModel->rowCount(parentIndex);
+    for (int row = 0; row < rowCount; ++row)
+    {
+        QModelIndex index = _navigationModel->index(row, 0, parentIndex);
+        // YyNavigationNode* childNode = static_cast<YyNavigationNode*>(index.internalPointer());
+        // childNode->setModelIndex(index);
+        if (_navigationModel->hasChildren(index))
+        {
+            _initNodeModelIndex(index);
+        }
+    }
+}
 
-// void YyNavigationBarPrivate::_resetNodeSelected()
-// {
-//     // _navigationView->clearSelection();
-//     // YyNavigationNode* selectedNode = _navigationModel->getSelectedNode();
-//     // if (!selectedNode || !selectedNode->getModelIndex().isValid())
-//     // {
-//     //     return;
-//     // }
-//     // if (selectedNode->getParentNode()->getIsRootNode() || selectedNode->getIsVisible())
-//     // {
-//     //     _navigationView->selectionModel()->select(selectedNode->getModelIndex(), QItemSelectionModel::Select);
-//     //     if (_navigationModel->getSelectedExpandedNode())
-//     //     {
-//     //         QVariantMap postData = QVariantMap();
-//     //         postData.insert("SelectMarkChanged", true);
-//     //         postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
-//     //         postData.insert("SelectedNode", QVariant::fromValue(selectedNode));
-//     //         _navigationView->navigationNodeStateChange(postData);
-//     //     }
-//     //     _navigationModel->setSelectedExpandedNode(nullptr);
-//     // }
-//     // else
-//     // {
-//     //     YyNavigationNode* parentNode = selectedNode->getParentNode();
-//     //     while (parentNode && !parentNode->getParentNode()->getIsRootNode() && !parentNode->getIsVisible())
-//     //     {
-//     //         parentNode = parentNode->getParentNode();
-//     //     }
-//     //     if (!parentNode)
-//     //     {
-//     //         return;
-//     //     }
-//     //     // 单级节点展开/收起时Mark变化
-//     //     if (!_navigationModel->getSelectedExpandedNode())
-//     //     {
-//     //         QVariantMap postData = QVariantMap();
-//     //         postData.insert("SelectMarkChanged", true);
-//     //         postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedNode()));
-//     //         postData.insert("SelectedNode", QVariant::fromValue(parentNode));
-//     //         _navigationView->navigationNodeStateChange(postData);
-//     //     }
-//     //     else
-//     //     {
-//     //         // 多级节点
-//     //         if (_navigationModel->getSelectedExpandedNode() != parentNode)
-//     //         {
-//     //             // 同一起源节点展开/收起时的Mark变化
-//     //             if (_navigationModel->getSelectedExpandedNode()->getOriginalNode() == parentNode->getOriginalNode())
-//     //             {
-//     //                 QVariantMap postData = QVariantMap();
-//     //                 postData.insert("SelectMarkChanged", true);
-//     //                 postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
-//     //                 postData.insert("SelectedNode", QVariant::fromValue(parentNode));
-//     //                 _navigationView->navigationNodeStateChange(postData);
-//     //             }
-//     //         }
-//     //     }
-//     //     _navigationModel->setSelectedExpandedNode(parentNode);
-//     //     _navigationView->selectionModel()->select(parentNode->getModelIndex(), QItemSelectionModel::Select);
-//     // }
-// }
+void YyNavigationBarPrivate::_resetNodeSelected()
+{
+    _navigationView->clearSelection();
+    YyNavigationNode* selectedNode = _navigationModel->getSelectedNode();
+    if (!selectedNode || !selectedNode->getModelIndex().isValid())
+    {
+        return;
+    }
+    if (selectedNode->getParentNode()->getIsRootNode() || selectedNode->getIsVisible())
+    {
+        // 设置item为选中状态
+        _navigationView->selectionModel()->select(selectedNode->getModelIndex(), QItemSelectionModel::Select);
+        // if (_navigationModel->getSelectedExpandedNode())
+        // {
+        //     QVariantMap postData = QVariantMap();
+        //     postData.insert("SelectMarkChanged", true);
+        //     postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
+        //     postData.insert("SelectedNode", QVariant::fromValue(selectedNode));
+        //     _navigationView->navigationNodeStateChange(postData);
+        // }
+        _navigationModel->setSelectedExpandedNode(nullptr);
+    }
+    else
+    {
+        YyNavigationNode* parentNode = selectedNode->getParentNode();
+        while (parentNode && !parentNode->getParentNode()->getIsRootNode() && !parentNode->getIsVisible())
+        {
+            parentNode = parentNode->getParentNode();
+        }
+        if (!parentNode)
+        {
+            return;
+        }
+        // 单级节点展开/收起时Mark变化
+        if (!_navigationModel->getSelectedExpandedNode())
+        {
+            QVariantMap postData = QVariantMap();
+            postData.insert("SelectMarkChanged", true);
+            postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedNode()));
+            postData.insert("SelectedNode", QVariant::fromValue(parentNode));
+            _navigationView->navigationNodeStateChange(postData);
+        }
+        else
+        {
+            // 多级节点
+            if (_navigationModel->getSelectedExpandedNode() != parentNode)
+            {
+                // 同一起源节点展开/收起时的Mark变化
+                if (_navigationModel->getSelectedExpandedNode()->getOriginalNode() == parentNode->getOriginalNode())
+                {
+                    QVariantMap postData = QVariantMap();
+                    postData.insert("SelectMarkChanged", true);
+                    postData.insert("LastSelectedNode", QVariant::fromValue(_navigationModel->getSelectedExpandedNode()));
+                    postData.insert("SelectedNode", QVariant::fromValue(parentNode));
+                    _navigationView->navigationNodeStateChange(postData);
+                }
+            }
+        }
+        _navigationModel->setSelectedExpandedNode(parentNode);
+        _navigationView->selectionModel()->select(parentNode->getModelIndex(), QItemSelectionModel::Select);
+    }
+}
 
-// void YyNavigationBarPrivate::_expandSelectedNodeParent()
-// {
-//     // YyNavigationNode* parentNode = _navigationModel->getSelectedNode()->getParentNode();
-//     // while (parentNode && !parentNode->getIsRootNode())
-//     // {
-//     //     QVariantMap data;
-//     //     data.insert("Expand", QVariant::fromValue(parentNode));
-//     //     _navigationView->navigationNodeStateChange(data);
-//     //     parentNode->setIsExpanded(true);
-//     //     _navigationView->expand(parentNode->getModelIndex());
-//     //     parentNode = parentNode->getParentNode();
-//     // }
-// }
+void YyNavigationBarPrivate::_expandSelectedNodeParent()
+{
+    YyNavigationNode* parentNode = _navigationModel->getSelectedNode()->getParentNode();
+    while (parentNode && !parentNode->getIsRootNode())
+    {
+        QVariantMap data;
+        data.insert("Expand", QVariant::fromValue(parentNode));
+        _navigationView->navigationNodeStateChange(data);
+        parentNode->setIsExpanded(true);
+        _navigationView->expand(parentNode->getModelIndex());
+        parentNode = parentNode->getParentNode();
+    }
+}
 
-// void YyNavigationBarPrivate::_expandOrCollapseExpanderNode(YyNavigationNode* node, bool isExpand)
-// {
-//     // if (_currentDisplayMode == YyNavigationType::Compact)
-//     // {
-//     //     if (node->getIsHasPageChild())
-//     //     {
-//     //         //展开菜单
-//     //         YyMenu* menu = _compactMenuMap.value(node);
-//     //         if (menu)
-//     //         {
-//     //             QPoint nodeTopRight = _navigationView->mapToGlobal(_navigationView->visualRect(node->getModelIndex()).topRight());
-//     //             menu->popup(QPoint(nodeTopRight.x() + 10, nodeTopRight.y()));
-//     //         }
-//     //     }
-//     // }
-//     // else
-//     // {
-//     //     QModelIndex index = node->getModelIndex();
-//     //     bool isExpanded = _navigationView->isExpanded(index);
-//     //     if (node->getIsHasChild() && isExpand != isExpanded)
-//     //     {
-//     //         QVariantMap data;
-//     //         if (isExpanded)
-//     //         {
-//     //             // 收起
-//     //             data.insert("Collapse", QVariant::fromValue(node));
-//     //             node->setIsExpanded(isExpand);
-//     //             _navigationView->navigationNodeStateChange(data);
-//     //             _navigationView->collapse(index);
-//     //         }
-//     //         else
-//     //         {
-//     //             // 展开
-//     //             data.insert("Expand", QVariant::fromValue(node));
-//     //             node->setIsExpanded(true);
-//     //             _navigationView->navigationNodeStateChange(data);
-//     //             _navigationView->expand(index);
-//     //         }
-//     //     }
-//     // }
-// }
+void YyNavigationBarPrivate::_expandOrCollapseExpanderNode(YyNavigationNode* node, bool isExpand)
+{
+    if (_currentDisplayMode == YyNavigationType::Compact)
+    {
+        // 为Expand节点弹出菜单
+        if (node->getIsHasPageChild())
+        {
+            //展开菜单
+            YyMenu* menu = _compactMenuMap.value(node);
+            if (menu)
+            {
+                QPoint nodeTopRight = _navigationView->mapToGlobal(_navigationView->visualRect(node->getModelIndex()).topRight());
+                menu->popup(QPoint(nodeTopRight.x() + 10, nodeTopRight.y()));
+            }
+        }
+    }
+    else
+    {
+        QModelIndex index = node->getModelIndex();
+        bool isExpanded = _navigationView->isExpanded(index);
+        if (node->getIsHasChild() && isExpand != isExpanded)
+        {
+            QVariantMap data;
+            if (isExpanded)
+            {
+                // 收起
+                data.insert("Collapse", QVariant::fromValue(node));
+                node->setIsExpanded(isExpand);
+                _navigationView->navigationNodeStateChange(data);
+                _navigationView->collapse(index);
+            }
+            else
+            {
+                // 展开
+                data.insert("Expand", QVariant::fromValue(node));
+                node->setIsExpanded(true);
+                _navigationView->navigationNodeStateChange(data);
+                _navigationView->expand(index);
+            }
+        }
+    }
+}
 
-// void YyNavigationBarPrivate::_addStackedPage(QWidget* page, QString pageKey)
-// {
-//     // Q_Q(YyNavigationBar);
-//     // page->setProperty("YyPageKey", pageKey);
-//     // Q_EMIT q->navigationNodeAdded(YyNavigationType::PageNode, pageKey, page);
-//     // YyNavigationNode* node = _navigationModel->getNavigationNode(pageKey);
-//     // QVariantMap suggestData;
-//     // suggestData.insert("YyPageKey", pageKey);
-//     // _suggestDataList.append(YySuggestBox::SuggestData(node->getAwesome(), node->getNodeTitle(), suggestData));
-// }
+void YyNavigationBarPrivate::_addStackedPage(QWidget* page, QString pageKey)
+{
+    Q_Q(YyNavigationBar);
+    page->setProperty("YyPageKey", pageKey);
+    Q_EMIT q->navigationNodeAdded(YyNavigationType::PageNode, pageKey, page);
+    YyNavigationNode* node = _navigationModel->getNavigationNode(pageKey);
+    QVariantMap suggestData;
+    suggestData.insert("YyPageKey", pageKey);
+    _suggestDataList.append(YySuggestBox::SuggestData(node->getAwesome(), node->getNodeTitle(), suggestData));
+}
 
-// void YyNavigationBarPrivate::_addFooterPage(QWidget* page, QString footKey)
-// {
-//     // Q_Q(YyNavigationBar);
-//     // Q_EMIT q->navigationNodeAdded(YyNavigationType::FooterNode, footKey, page);
-//     // if (page)
-//     // {
-//     //     page->setProperty("YyPageKey", footKey);
-//     // }
-//     // _footerView->setFixedHeight(40 * _footerModel->getFooterNodeCount());
-//     // YyNavigationNode* node = _footerModel->getNavigationNode(footKey);
-//     // QVariantMap suggestData;
-//     // suggestData.insert("YyPageKey", footKey);
-//     // _suggestDataList.append(YySuggestBox::SuggestData(node->getAwesome(), node->getNodeTitle(), suggestData));
-// }
+void YyNavigationBarPrivate::_addFooterPage(QWidget* page, QString footKey)
+{
+    Q_Q(YyNavigationBar);
+    Q_EMIT q->navigationNodeAdded(YyNavigationType::FooterNode, footKey, page);
+    if (page)
+    {
+        page->setProperty("YyPageKey", footKey);
+    }
+    _footerView->setFixedHeight(40 * _footerModel->getFooterNodeCount());
+    YyNavigationNode* node = _footerModel->getNavigationNode(footKey);
+    QVariantMap suggestData;
+    suggestData.insert("YyPageKey", footKey);
+    _suggestDataList.append(YySuggestBox::SuggestData(node->getAwesome(), node->getNodeTitle(), suggestData));
+}
 
-// void YyNavigationBarPrivate::_raiseNavigationBar()
-// {
-//     // Q_Q(YyNavigationBar);
-//     // q->raise();
-// }
+void YyNavigationBarPrivate::_raiseNavigationBar()
+{
+    Q_Q(YyNavigationBar);
+    q->raise();
+}
 
 // void YyNavigationBarPrivate::_smoothScrollNavigationView(const QModelIndex& index)
 // {

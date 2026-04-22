@@ -54,6 +54,10 @@ private:
     YyCentralStackedWidget* _centerStackedWidget{nullptr};
     YyCentralStackedWidget* _navigationCenterStackedWidget{nullptr};
     YyNavigationType::NavigationDisplayMode _currentNavigationBarDisplayMode{YyNavigationType::Maximal};
+    QMap<QString, const QMetaObject*> _pageMetaMap;
+    QMap<QString, QWidget*> _routeMap; // key__nodeKey title可以一致  value__Page
+    int _centralStackTargetIndex{0};
+    int _navigationTargetIndex{0};
     bool _isInitFinished{false};
     int _contentsMargins{5};
     void _doNavigationDisplayModeChange();

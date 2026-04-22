@@ -131,7 +131,7 @@ void YyMenuStyle::drawControl(ControlElement element, const QStyleOption* option
                         }
                     }
                 }
-                //文字和快捷键绘制
+                // 文字和快捷键绘制
                 if (!mopt->text.isEmpty())
                 {
                     QStringList textList = mopt->text.split("\t");
@@ -144,7 +144,7 @@ void YyMenuStyle::drawControl(ControlElement element, const QStyleOption* option
                         painter->drawText(QRectF(menuRect.x() + contentPadding + _iconWidth + textLeftSpacing, menuRect.y(), menuRect.width() - (contentPadding * 2 + _iconWidth + textLeftSpacing), menuRect.height()), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, textList[1]);
                     }
                 }
-                //展开图标
+                // 展开图标
                 if (mopt->menuItemType == QStyleOptionMenuItem::SubMenu)
                 {
                     painter->save();

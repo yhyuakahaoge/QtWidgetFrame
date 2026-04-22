@@ -27,7 +27,8 @@ class YyNavigationBarPrivate : public QObject
     Q_OBJECT
     Q_D_CREATE(YyNavigationBar)
     Q_PROPERTY_CREATE_D(bool, IsTransparent)
-    // Q_PROPERTY_CREATE_D(bool, IsAllowPageOpenInNewWindow)
+    // 允许导航栏中自定义Menu设定可在新窗口弹出
+    Q_PROPERTY_CREATE_D(bool, IsAllowPageOpenInNewWindow)
     Q_PROPERTY_CREATE_D(int, NavigationBarWidth)
     Q_PROPERTY_CREATE(int, NavigationViewWidth);
     Q_PROPERTY_CREATE(int, UserButtonSpacing);
@@ -35,49 +36,52 @@ class YyNavigationBarPrivate : public QObject
 public:
     explicit YyNavigationBarPrivate(QObject* parent = nullptr);
     ~YyNavigationBarPrivate() override;
-    // Q_SLOT void onNavigationOpenNewWindow(QString nodeKey);
+    Q_SLOT void onNavigationOpenNewWindow(QString nodeKey);
 
     // Q_INVOKABLE void onNavigationRoute(QVariantMap routeData);
 
-    // //核心跳转逻辑
-    // void onTreeViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
-    // void onFooterViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
+    // 核心跳转逻辑
+    void onTreeViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
+    void onFooterViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
 
 protected:
     virtual bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
-    // friend class YyNavigationView;
-    // friend class YyNavigationStyle;
+    friend class YyNavigationView;
+    friend class YyNavigationStyle;
     YyThemeType::ThemeMode _themeMode;
-    // QList<YySuggestBox::SuggestData> _suggestDataList;
-    // QMap<QString, const QMetaObject*> _pageMetaMap;
-    // QMap<QString, int> _pageNewWindowCountMap;
-    // QMap<YyNavigationNode*, YyMenu*> _compactMenuMap;
+    QList<YySuggestBox::SuggestData> _suggestDataList;
+    QMap<QString, const QMetaObject*> _pageMetaMap;
+    // 记录某个pageNode开了几个窗口
+    QMap<QString, int> _pageNewWindowCountMap;
+    // compact模式下悬浮菜单
+    QMap<YyNavigationNode*, YyMenu*> _compactMenuMap;
     QVBoxLayout* _userCardLayout{nullptr};
     QVBoxLayout* _userButtonLayout{nullptr};
 
     YyIconButton* _userButton{nullptr};
-    // YyNavigationModel* _navigationModel{nullptr};
-    // YyNavigationView* _navigationView{nullptr};
-    // YyBaseListView* _footerView{nullptr};
-    // YyFooterModel* _footerModel{nullptr};
-    // YyFooterDelegate* _footerDelegate{nullptr};
+    YyNavigationModel* _navigationModel{nullptr};
+    YyNavigationView* _navigationView{nullptr};
+    YyBaseListView* _footerView{nullptr};
+    YyFooterModel* _footerModel{nullptr};
+    YyFooterDelegate* _footerDelegate{nullptr};
     YyInteractiveCard* _userCard{nullptr};
     bool _isShowUserCard{true};
 
-    // QList<YyNavigationNode*> _lastExpandedNodesList;
+    // 辅助保存展开状态
+    QList<YyNavigationNode*> _lastExpandedNodesList;
 
     YyNavigationType::NavigationDisplayMode _currentDisplayMode{YyNavigationType::NavigationDisplayMode::Maximal};
-    // void _initNodeModelIndex(const QModelIndex& parentIndex);
-    // void _resetNodeSelected();
-    // void _expandSelectedNodeParent();
-    // void _expandOrCollapseExpanderNode(YyNavigationNode* node, bool isExpand);
+    void _initNodeModelIndex(const QModelIndex& parentIndex);
+    void _resetNodeSelected();
+    void _expandSelectedNodeParent();
+    void _expandOrCollapseExpanderNode(YyNavigationNode* node, bool isExpand);
 
-    // void _addStackedPage(QWidget* page, QString pageKey);
-    // void _addFooterPage(QWidget* page, QString footKey);
+    void _addStackedPage(QWidget* page, QString pageKey);
+    void _addFooterPage(QWidget* page, QString footKey);
 
-    // void _raiseNavigationBar();
+    void _raiseNavigationBar();
     // void _smoothScrollNavigationView(const QModelIndex& index);
 
     // void _doComponentAnimation(YyNavigationType::NavigationDisplayMode displayMode, bool isAnimation);

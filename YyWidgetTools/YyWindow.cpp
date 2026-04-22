@@ -22,6 +22,7 @@
 #include "YyNavigationBar.h"
 #include "YyCentralStackedWidget.h"
 #include "YyWindowStyle.h"
+#include "YyMenu.h"
 Q_PROPERTY_CREATE_Q_CPP(YyWindow, int, ThemeChangeTime)
 //Q_PROPERTY_CREATE_Q_CPP(YyWindow, YyWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(YyWindow, d_func()->_appBar);
@@ -58,7 +59,7 @@ YyWindow::YyWindow(QWidget* parent)
     d->_centerLayout->addWidget(d->_navigationCenterStackedWidget);
     d->_centerLayout->setContentsMargins(d->_contentsMargins, 0, 0, 0);
 
-    // 中心堆栈窗口
+    // 中心堆栈窗口 最外层widget
     d->_centerStackedWidget = new YyCentralStackedWidget(this);
     d->_centerStackedWidget->setIsTransparent(true);
     d->_centerStackedWidget->getContainerStackedWidget()->addWidget(navigationCentralWidget);
@@ -324,6 +325,151 @@ void YyWindow::setWindowMoviePath(YyThemeType::ThemeMode themeMode, const QStrin
     }
 }
 
+void YyWindow::setUserInfoCardVisible(bool isVisible)
+{
+    Q_D(YyWindow);
+    d->_navigationBar->setUserInfoCardVisible(isVisible);
+}
+
+void YyWindow::setUserInfoCardPixmap(QPixmap pix)
+{
+    Q_D(YyWindow);
+    d->_navigationBar->setUserInfoCardPixmap(pix);
+}
+
+void YyWindow::setUserInfoCardTitle(QString Title)
+{
+    Q_D(YyWindow);
+    d->_navigationBar->setUserInfoCardTitle(Title);
+}
+
+void YyWindow::setUserInfoCardSubTitle(QString subTitle)
+{
+    Q_D(YyWindow);
+    d->_navigationBar->setUserInfoCardSubTitle(subTitle);
+}
+
+void YyWindow::setCentralCustomWidget(QWidget *customWidget)
+{
+    Q_D(YyWindow);
+    d->_navigationCenterStackedWidget->setCustomWidget(customWidget);
+    Q_EMIT centralCustomWidgetChanged();
+}
+
+QWidget *YyWindow::getCentralCustomWidget() const
+{
+    Q_D(const YyWindow);
+    return d->_navigationCenterStackedWidget->getCustomWidget();
+}
+
+void YyWindow::setCustomMenu(QMenu *customMenu)
+{
+    Q_D(YyWindow);
+    d->_appBar->setCustomMenu(customMenu);
+    Q_EMIT customMenuChanged();
+}
+
+QMenu *YyWindow::getCustomMenu() const
+{
+    Q_D(const YyWindow);
+    return d->_appBar->getCustomMenu();
+}
+
+YyNavigationType::NodeResult YyWindow::addExpanderNode(const QString &expanderTitle, QString &expanderKey, YyIconType::IconName awesome) const
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, awesome);
+}
+
+YyNavigationType::NodeResult YyWindow::addExpanderNode(const QString &expanderTitle, QString &expanderKey, const QString &targetExpanderKey, YyIconType::IconName awesome) const
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, targetExpanderKey, awesome);
+}
+
+YyNavigationType::NodeResult YyWindow::addPageNode(const QString &pageTitle, QWidget *page, YyIconType::IconName awesome)
+{
+    Q_D(YyWindow);
+    auto returnType = d->_navigationBar->addPageNode(pageTitle, page, awesome);
+    if (returnType == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(page->property("YyPageKey").toString(), page->metaObject());
+    }
+    return returnType;
+}
+
+YyNavigationType::NodeResult YyWindow::addPageNode(const QString &pageTitle, QWidget *page, int keyPoints, YyIconType::IconName awesome)
+{
+    Q_D(YyWindow);
+    auto returnType = d->_navigationBar->addPageNode(pageTitle, page, keyPoints, awesome);
+    if (returnType == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(page->property("YyPageKey").toString(), page->metaObject());
+    }
+    return returnType;
+}
+
+YyNavigationType::NodeResult YyWindow::addPageNode(const QString &pageTitle, QWidget *page, const QString &targetExpanderKey, YyIconType::IconName awesome)
+{
+    Q_D(YyWindow);
+    auto returnType = d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, awesome);
+    if (returnType == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(page->property("YyPageKey").toString(), page->metaObject());
+    }
+    return returnType;
+}
+
+YyNavigationType::NodeResult YyWindow::addPageNode(const QString &pageTitle, QWidget *page, const QString &targetExpanderKey, int keyPoints, YyIconType::IconName awesome)
+{
+    Q_D(YyWindow);
+    auto returnType = d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, keyPoints, awesome);
+    if (returnType == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(page->property("YyPageKey").toString(), page->metaObject());
+    }
+    return returnType;
+}
+
+YyNavigationType::NodeResult YyWindow::addFooterNode(const QString &footerTitle, QString &footerKey, int keyPoints, YyIconType::IconName awesome) const
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->addFooterNode(footerTitle, nullptr, footerKey, keyPoints, awesome);
+}
+
+YyNavigationType::NodeResult YyWindow::addFooterNode(const QString &footerTitle, QWidget *page, QString &footerKey, int keyPoints, YyIconType::IconName awesome)
+{
+    Q_D(YyWindow);
+    auto returnType = d->_navigationBar->addFooterNode(footerTitle, page, footerKey, keyPoints, awesome);
+    if (page && returnType == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(page->property("YyPageKey").toString(), page->metaObject());
+    }
+    return returnType;
+}
+
+YyNavigationType::NodeResult YyWindow::addCategoryNode(const QString &categoryTitle, QString &categoryKey)
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->addCategoryNode(categoryTitle, categoryKey);
+}
+
+YyNavigationType::NodeResult YyWindow::addCategoryNode(const QString &categoryTitle, QString &categoryKey, const QString &targetExpanderKey)
+{
+    Q_D(const YyWindow);
+    return d->_navigationBar->addCategoryNode(categoryTitle, categoryKey, targetExpanderKey);
+}
+
+void YyWindow::addCentralWidget(QWidget *centralWidget)
+{
+    Q_D(YyWindow);
+    if (!centralWidget)
+    {
+        return;
+    }
+    d->_centerStackedWidget->getContainerStackedWidget()->addWidget(centralWidget);
+}
+
 bool YyWindow::eventFilter(QObject *watched, QEvent *event)
 {
     Q_D(YyWindow);
@@ -340,6 +486,47 @@ bool YyWindow::eventFilter(QObject *watched, QEvent *event)
     }
     }
     return QMainWindow::eventFilter(watched, event);
+}
+
+QMenu *YyWindow::createPopupMenu()
+{
+    YyMenu* menu = nullptr;
+    QList<QDockWidget*> dockwidgets = findChildren<QDockWidget*>();
+    if (dockwidgets.size())
+    {
+        menu = new YyMenu(this);
+        for (int i = 0; i < dockwidgets.size(); ++i)
+        {
+            QDockWidget* dockWidget = dockwidgets.at(i);
+            if (dockWidget->parentWidget() == this)
+            {
+                menu->addAction(dockwidgets.at(i)->toggleViewAction());
+            }
+        }
+        menu->addSeparator();
+    }
+
+    QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+    if (toolbars.size())
+    {
+        if (!menu)
+        {
+            menu = new YyMenu(this);
+        }
+        for (int i = 0; i < toolbars.size(); ++i)
+        {
+            QToolBar* toolBar = toolbars.at(i);
+            if (toolBar->parentWidget() == this)
+            {
+                menu->addAction(toolbars.at(i)->toggleViewAction());
+            }
+        }
+    }
+    if (menu)
+    {
+        menu->setMenuItemHeight(28);
+    }
+    return menu;
 }
 
 

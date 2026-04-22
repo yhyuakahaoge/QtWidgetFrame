@@ -1,20 +1,19 @@
 #include "YyNavigationBar.h"
 
 #include "YyBaseListView.h"
-// #include "YyFooterDelegate.h"
-// #include "YyFooterModel.h"
+#include "YyFooterDelegate.h"
+#include "YyFooterModel.h"
 #include "YyIconButton.h"
 #include "YyInteractiveCard.h"
-// #include "YyMenu.h"
-// #include "YyNavigationModel.h"
-// #include "YyNavigationNode.h"
+#include "YyMenu.h"
+#include "YyNavigationModel.h"
+#include "YyNavigationNode.h"
 
-// #include "YyNavigationView.h"
-// #include "YySuggestBox.h"
+#include "YyNavigationView.h"
 #include "YyTheme.h"
-// #include "YyToolButton.h"
+#include "YyToolButton.h"
 #include "private/YyNavigationBarPrivate.h"
-//#include "private/YySuggestBoxPrivate.h"
+#include "private/YySuggestBoxPrivate.h"
 #include <QEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -23,13 +22,13 @@
 #include <QScroller>
 #include <QVBoxLayout>
 Q_PROPERTY_CREATE_Q_CPP(YyNavigationBar, bool, IsTransparent)
-// Q_PROPERTY_CREATE_Q_CPP(YyNavigationBar, bool, IsAllowPageOpenInNewWindow)
+Q_PROPERTY_CREATE_Q_CPP(YyNavigationBar, bool, IsAllowPageOpenInNewWindow)
 YyNavigationBar::YyNavigationBar(QWidget* parent)
     : QWidget{parent}, d_ptr(new YyNavigationBarPrivate())
 {
     Q_D(YyNavigationBar);
     d->q_ptr = this;
-    // d->_pIsAllowPageOpenInNewWindow = true;
+    d->_pIsAllowPageOpenInNewWindow = true;
     d->_pNavigationBarWidth = 300;
     setFixedWidth(300);
     d->_pIsTransparent = true;
@@ -57,53 +56,53 @@ YyNavigationBar::YyNavigationBar(QWidget* parent)
     d->_userCardLayout->addLayout(d->_userButtonLayout);
     d->_userCardLayout->addWidget(d->_userCard);
 
-    // // 搜索跳转
-    // //    connect(d->_navigationSuggestBox, &YySuggestBox::suggestionClicked, this, [=](QString suggestText, QVariantMap suggestData) {
-    // //        navigation(suggestData.value("YyPageKey").toString());
-    // //    });
+    // 搜索跳转
+    //    connect(d->_navigationSuggestBox, &YySuggestBox::suggestionClicked, this, [=](QString suggestText, QVariantMap suggestData) {
+    //        navigation(suggestData.value("YyPageKey").toString());
+    //    });
 
-    // // 导航模型
-    // d->_navigationModel = new YyNavigationModel(this);
-    // d->_navigationView = new YyNavigationView(this);
-    // d->_navigationView->setNavigationBarPrivate(d);
-    // d->_navigationView->setModel(d->_navigationModel);
-    // connect(d->_navigationView, &YyNavigationView::navigationClicked, this, [=](const QModelIndex& index) {
-    //     d->onTreeViewClicked(index);
-    // });
+    // 导航模型
+    d->_navigationModel = new YyNavigationModel(this);
+    d->_navigationView = new YyNavigationView(this);
+    d->_navigationView->setNavigationBarPrivate(d);
+    d->_navigationView->setModel(d->_navigationModel);
+    connect(d->_navigationView, &YyNavigationView::navigationClicked, this, [=](const QModelIndex& index) {
+        d->onTreeViewClicked(index);
+    });
     // connect(d->_navigationView, &YyNavigationView::navigationOpenNewWindow, d, &YyNavigationBarPrivate::onNavigationOpenNewWindow);
 
-    // // 页脚
-    // d->_footerView = new YyBaseListView(this);
-    // d->_footerView->setFixedHeight(0);
-    // d->_footerModel = new YyFooterModel(this);
-    // d->_footerView->setModel(d->_footerModel);
-    // d->_footerDelegate = new YyFooterDelegate(this);
-    // d->_footerDelegate->setYyListView(d->_footerView);
-    // d->_footerView->setItemDelegate(d->_footerDelegate);
-    // connect(d->_footerView, &YyBaseListView::mousePress, this, [=](const QModelIndex& index) {
-    //     d->_footerDelegate->setPressIndex(index);
-    //     d->_footerView->viewport()->update();
-    // });
-    // connect(d->_footerView, &YyBaseListView::mouseDoubleClick, this, [=](const QModelIndex& index) {
-    //     d->_footerDelegate->setPressIndex(index);
-    //     d->_footerView->viewport()->update();
-    // });
-    // connect(d->_footerView, &YyBaseListView::mouseRelease, this, [=](const QModelIndex& index) {
-    //     d->_footerDelegate->setPressIndex(QModelIndex());
-    //     d->_footerView->viewport()->update();
-    // });
-    // connect(d->_footerView, &YyBaseListView::clicked, this, [=](const QModelIndex& index) {
-    //     d->onFooterViewClicked(index);
-    // });
+    // 页脚
+    d->_footerView = new YyBaseListView(this);
+    d->_footerView->setFixedHeight(0);
+    d->_footerModel = new YyFooterModel(this);
+    d->_footerView->setModel(d->_footerModel);
+    d->_footerDelegate = new YyFooterDelegate(this);
+    d->_footerDelegate->setYyListView(d->_footerView);
+    d->_footerView->setItemDelegate(d->_footerDelegate);
+    connect(d->_footerView, &YyBaseListView::mousePress, this, [=](const QModelIndex& index) {
+        d->_footerDelegate->setPressIndex(index);
+        d->_footerView->viewport()->update();
+    });
+    connect(d->_footerView, &YyBaseListView::mouseDoubleClick, this, [=](const QModelIndex& index) {
+        d->_footerDelegate->setPressIndex(index);
+        d->_footerView->viewport()->update();
+    });
+    connect(d->_footerView, &YyBaseListView::mouseRelease, this, [=](const QModelIndex& index) {
+        d->_footerDelegate->setPressIndex(QModelIndex());
+        d->_footerView->viewport()->update();
+    });
+    connect(d->_footerView, &YyBaseListView::clicked, this, [=](const QModelIndex& index) {
+        // d->onFooterViewClicked(index);
+    });
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setAlignment(Qt::AlignLeft);
     mainLayout->setSpacing(0);
-    //mainLayout->addLayout(d->_userCardLayout);
+    mainLayout->addLayout(d->_userCardLayout);
 
-    //mainLayout->addWidget(d->_navigationView);
-    //mainLayout->addWidget(d->_footerView);
+    mainLayout->addWidget(d->_navigationView);
+    mainLayout->addWidget(d->_footerView);
 
     // // 主题设置
     d->_themeMode = eTheme->getThemeMode();
@@ -177,6 +176,421 @@ void YyNavigationBar::setUserInfoCardSubTitle(QString subTitle)
     Q_D(YyNavigationBar);
     d->_userCard->setSubTitle(subTitle);
 }
+
+YyNavigationType::NodeResult YyNavigationBar::addExpanderNode(const QString &expanderTitle, QString &expanderKey, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationType::NodeResult result = d->_navigationModel->addExpanderNode(expanderTitle, expanderKey, awesome);
+    if(result == YyNavigationType::Success)
+    {
+        // 传入空ModelIndex默认为根节点
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addExpanderNode(const QString &expanderTitle, QString &expanderKey, const QString &targetExpanderKey, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationType::NodeResult result = d->_navigationModel->addExpanderNode(expanderTitle, expanderKey, targetExpanderKey, awesome);
+    if (result == YyNavigationType::Success)
+    {
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addPageNode(const QString &pageTitle, QWidget *page, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    if (!page)
+    {
+        return YyNavigationType::PageInvalid;
+    }
+    QString pageKey;
+    YyNavigationType::NodeResult result = d_ptr->_navigationModel->addPageNode(pageTitle, pageKey, awesome);
+    if (result == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(pageKey, page->metaObject());
+        d->_pageNewWindowCountMap.insert(pageKey, 0);
+        d->_addStackedPage(page, pageKey);
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addPageNode(const QString &pageTitle, QWidget *page, int keyPoints, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    if (!page)
+    {
+        return YyNavigationType::PageInvalid;
+    }
+    QString pageKey;
+    YyNavigationType::NodeResult result = d_ptr->_navigationModel->addPageNode(pageTitle, pageKey, keyPoints, awesome);
+    if (result == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(pageKey, page->metaObject());
+        d->_pageNewWindowCountMap.insert(pageKey, 0);
+        d->_addStackedPage(page, pageKey);
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addPageNode(const QString &pageTitle, QWidget *page, const QString &targetExpanderKey, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    if (!page)
+    {
+        return YyNavigationType::PageInvalid;
+    }
+    if (targetExpanderKey.isEmpty())
+    {
+        return YyNavigationType::TargetNodeInvalid;
+    }
+    QString pageKey;
+    YyNavigationType::NodeResult result = d->_navigationModel->addPageNode(pageTitle, pageKey, targetExpanderKey, awesome);
+    if (result == YyNavigationType::NodeResult::Success)
+    {
+        d->_pageMetaMap.insert(pageKey, page->metaObject());
+        d->_pageNewWindowCountMap.insert(pageKey, 0);
+        YyNavigationNode* node = d->_navigationModel->getNavigationNode(pageKey);
+        YyNavigationNode* originalNode = node->getOriginalNode();
+        if (d->_compactMenuMap.contains(originalNode))
+        {
+            YyMenu* menu = d->_compactMenuMap.value(originalNode);
+            QAction* action = menu->addYyIconAction(node->getAwesome(), node->getNodeTitle());
+            connect(action, &QAction::triggered, this, [=]() {
+                d->onTreeViewClicked(node->getModelIndex());
+            });
+        }
+        else
+        {
+            YyMenu* menu = new YyMenu(const_cast<YyNavigationBar*>(this));
+            QAction* action = menu->addYyIconAction(node->getAwesome(), node->getNodeTitle());
+            connect(action, &QAction::triggered, this, [=]() {
+                d_ptr->onTreeViewClicked(node->getModelIndex());
+            });
+            d_ptr->_compactMenuMap.insert(originalNode, menu);
+        }
+        d_ptr->_addStackedPage(page, pageKey);
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addPageNode(const QString &pageTitle, QWidget *page, const QString &targetExpanderKey, int keyPoints, YyIconType::IconName awesome)
+{
+    Q_D(YyNavigationBar);
+    if (!page)
+    {
+        return YyNavigationType::PageInvalid;
+    }
+    if (targetExpanderKey.isEmpty())
+    {
+        return YyNavigationType::TargetNodeInvalid;
+    }
+    QString pageKey;
+    YyNavigationType::NodeResult result = d_ptr->_navigationModel->addPageNode(pageTitle, pageKey, targetExpanderKey, keyPoints, awesome);
+    if (result == YyNavigationType::Success)
+    {
+        d->_pageMetaMap.insert(pageKey, page->metaObject());
+        d->_pageNewWindowCountMap.insert(pageKey, 0);
+        YyNavigationNode* node = d_ptr->_navigationModel->getNavigationNode(pageKey);
+        YyNavigationNode* originalNode = node->getOriginalNode();
+        if (d_ptr->_compactMenuMap.contains(originalNode))
+        {
+            YyMenu* menu = d_ptr->_compactMenuMap.value(originalNode);
+            QAction* action = menu->addYyIconAction(node->getAwesome(), node->getNodeTitle());
+            connect(action, &QAction::triggered, this, [=]() {
+                d_ptr->onTreeViewClicked(node->getModelIndex());
+            });
+        }
+        else
+        {
+            YyMenu* menu = new YyMenu(const_cast<YyNavigationBar*>(this));
+            QAction* action = menu->addYyIconAction(node->getAwesome(), node->getNodeTitle());
+            connect(action, &QAction::triggered, this, [=]() {
+                d_ptr->onTreeViewClicked(node->getModelIndex());
+            });
+            d_ptr->_compactMenuMap.insert(originalNode, menu);
+        }
+        d_ptr->_addStackedPage(page, pageKey);
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addFooterNode(const QString &footerTitle, QString &footerKey, int keyPoints, YyIconType::IconName awesome)
+{
+    return addFooterNode(footerTitle, nullptr, footerKey, keyPoints, awesome);
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addFooterNode(const QString &footerTitle, QWidget *page, QString &footerKey, int keyPoints, YyIconType::IconName awesome)
+{
+    YyNavigationType::NodeResult result = d_ptr->_footerModel->addFooterNode(footerTitle, footerKey, page != nullptr, keyPoints, awesome);
+    if (result == YyNavigationType::Success)
+    {
+        d_ptr->_addFooterPage(page, footerKey);
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addCategoryNode(const QString &categoryTitle, QString &categoryKey)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationType::NodeResult result = d_ptr->_navigationModel->addCategoryNode(categoryTitle, categoryKey);
+    if (result == YyNavigationType::Success)
+    {
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+        //Q_EMIT navigationNodeAdded(YyNavigationType::CategoryNode, categoryKey, nullptr);
+    }
+    return result;
+}
+
+YyNavigationType::NodeResult YyNavigationBar::addCategoryNode(const QString &categoryTitle, QString &categoryKey, const QString &targetExpanderKey)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationType::NodeResult result = d_ptr->_navigationModel->addCategoryNode(categoryTitle, categoryKey, targetExpanderKey);
+    if (result == YyNavigationType::Success)
+    {
+        d->_initNodeModelIndex(QModelIndex());
+        //d->_resetNodeSelected();
+    }
+    return result;
+}
+
+bool YyNavigationBar::getNodeIsExpanded(QString expanderKey) const
+{
+    Q_D(const YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(expanderKey);
+    if (!node || !node->getIsExpanderNode())
+    {
+        return false;
+    }
+    return d->_navigationView->isExpanded(node->getModelIndex());
+}
+
+void YyNavigationBar::expandNode(QString expanderKey)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(expanderKey);
+    if (!node || !node->getIsExpanderNode())
+    {
+        return;
+    }
+    d->_expandOrCollapseExpanderNode(node, true);
+    d->_resetNodeSelected();
+}
+
+void YyNavigationBar::collapseNode(QString expanderKey)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(expanderKey);
+    if (!node || !node->getIsExpanderNode())
+    {
+        return;
+    }
+    d->_expandOrCollapseExpanderNode(node, false);
+    d->_resetNodeSelected();
+}
+
+void YyNavigationBar::removeNode(QString nodeKey)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(nodeKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(nodeKey);
+    }
+    if (!node)
+    {
+        return;
+    }
+    if (node->getIsFooterNode())
+    {
+        Q_EMIT navigationNodeRemoved(YyNavigationType::FooterNode, nodeKey);
+        d->_footerModel->removeNavigationNode(nodeKey);
+        d->_footerView->setFixedHeight(40 * d->_footerModel->getFooterNodeCount());
+    }
+    else
+    {
+        if (node->getIsCategoryNode())
+        {
+            QStringList removeKeyList = d->_navigationModel->removeNavigationNode(nodeKey);
+            d->_initNodeModelIndex(QModelIndex());
+            for (const auto& removeKey: removeKeyList)
+            {
+                Q_EMIT navigationNodeRemoved(YyNavigationType::CategoryNode, removeKey);
+            }
+        }
+        else
+        {
+            QStringList removeKeyList = d->_navigationModel->removeNavigationNode(nodeKey);
+            d->_initNodeModelIndex(QModelIndex());
+            for (const auto& removeKey: removeKeyList)
+            {
+                d->_pageMetaMap.remove(removeKey);
+                d->_pageNewWindowCountMap.remove(removeKey);
+                Q_EMIT navigationNodeRemoved(YyNavigationType::PageNode, removeKey);
+            }
+        }
+    }
+    for (int i = 0; i < d->_suggestDataList.count(); i++)
+    {
+        auto& suggestData = d->_suggestDataList[i];
+        if (suggestData.getSuggestData().value("YyPageKey").toString() == nodeKey)
+        {
+            d->_suggestDataList.removeAt(i);
+            break;
+        }
+    }
+}
+
+void YyNavigationBar::setNodeKeyPoints(QString nodeKey, int keyPoints)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(nodeKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(nodeKey);
+    }
+    else if (node->getIsExpanderNode() || keyPoints < 0)
+    {
+        return;
+    }
+    if (!node)
+    {
+        return;
+    }
+    node->setKeyPoints(keyPoints);
+    if (node->getIsFooterNode())
+    {
+        d->_footerView->viewport()->update();
+    }
+    else
+    {
+        d->_navigationView->viewport()->update();
+    }
+}
+
+int YyNavigationBar::getNodeKeyPoints(QString nodeKey) const
+{
+    Q_D(const YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(nodeKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(nodeKey);
+    }
+    else if (node->getIsExpanderNode())
+    {
+        return -1;
+    }
+    if (!node)
+    {
+        return -1;
+    }
+    return node->getKeyPoints();
+}
+
+void YyNavigationBar::setNodeTitle(QString nodeKey, QString nodeTitle)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(nodeKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(nodeKey);
+    }
+    if (!node)
+    {
+        return;
+    }
+    node->setNodeTitle(nodeTitle);
+    update();
+}
+
+QString YyNavigationBar::getNodeTitle(QString nodeKey) const
+{
+    Q_D(const YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(nodeKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(nodeKey);
+    }
+    if (!node)
+    {
+        return {};
+    }
+    return node->getNodeTitle();
+}
+
+void YyNavigationBar::navigation(QString pageKey, bool isLogClicked, bool isRouteBack)
+{
+    Q_D(YyNavigationBar);
+    YyNavigationNode* node = d->_navigationModel->getNavigationNode(pageKey);
+    if (!node)
+    {
+        node = d->_footerModel->getNavigationNode(pageKey);
+    }
+    if (node)
+    {
+        if (node->getIsFooterNode())
+        {
+            d->onFooterViewClicked(node->getModelIndex(), isLogClicked, isRouteBack);
+        }
+        else
+        {
+            if (!node->getIsExpanderNode())
+            {
+                d->onTreeViewClicked(node->getModelIndex(), isLogClicked, isRouteBack);
+                //d->_smoothScrollNavigationView(node->getModelIndex());
+            }
+        }
+    }
+}
+
+void YyNavigationBar::setDisplayMode(YyNavigationType::NavigationDisplayMode displayMode, bool isAnimation)
+{
+    Q_D(YyNavigationBar);
+    if (d->_currentDisplayMode == displayMode || displayMode == YyNavigationType::Auto)
+    {
+        return;
+    }
+    d->_navigationModel->setIsMaximalMode(displayMode == YyNavigationType::Maximal);
+   // d->_doComponentAnimation(displayMode, isAnimation);
+    d->_raiseNavigationBar();
+}
+
+YyNavigationType::NavigationDisplayMode YyNavigationBar::getDisplayMode() const
+{
+    Q_D(const YyNavigationBar);
+    return d->_currentDisplayMode;
+}
+
+int YyNavigationBar::getPageOpenInNewWindowCount(QString nodeKey) const
+{
+    Q_D(const YyNavigationBar);
+    if (!d->_pageNewWindowCountMap.contains(nodeKey))
+    {
+        return 0;
+    }
+    return d->_pageNewWindowCountMap[nodeKey];
+}
+
+QList<YySuggestBox::SuggestData> YyNavigationBar::getSuggestDataList() const
+{
+    Q_D(const YyNavigationBar);
+    return d->_suggestDataList;
+}
+
 
 
 void YyNavigationBar::paintEvent(QPaintEvent* event)

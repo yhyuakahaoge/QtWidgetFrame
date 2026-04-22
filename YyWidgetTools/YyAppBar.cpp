@@ -160,7 +160,7 @@ YyAppBar::YyAppBar(QWidget *parent)
     QHBoxLayout* leftLayout = new QHBoxLayout();
     leftLayout->setSpacing(0);
     leftLayout->setContentsMargins(0, 0, 0, 0);
-    leftLayout->setAlignment(Qt::AlignLeft);//靠左
+    leftLayout->setAlignment(Qt::AlignLeft); //靠左
     leftLayout->addLayout(d->_createVLayout(d->_routeBackButton));
     leftLayout->addLayout(d->_createVLayout(d->_routeForwardButton));
     leftLayout->addLayout(d->_createVLayout(d->_navigationButton));
@@ -168,11 +168,11 @@ YyAppBar::YyAppBar(QWidget *parent)
     leftLayout->addLayout(d->_titleLabelLayout);
     d->_mainLayout->addLayout(leftLayout);
 
-    auto leftAreaWidget = new QWidget(this);
+    QWidget* leftAreaWidget = new QWidget(this);
     leftAreaWidget->setVisible(false);
-    auto middleAreaWidget = new QWidget(this);
+    QWidget* middleAreaWidget = new QWidget(this);
     middleAreaWidget->setVisible(false);
-    auto rightAreaWidget = new QWidget(this);
+    QWidget* rightAreaWidget = new QWidget(this);
     rightAreaWidget->setVisible(false);
     d->_customAreaWidgetList[0] = leftAreaWidget;
     d->_customAreaWidgetList[1] = middleAreaWidget;
@@ -395,6 +395,7 @@ void YyAppBar::closeWindow()
     closeOpacityAnimation->setStartValue(1);
     closeOpacityAnimation->setEndValue(0);
     closeOpacityAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    closeOpacityAnimation->setDuration(1000);
     closeOpacityAnimation->start(QAbstractAnimation::DeleteWhenStopped);
     // if (window()->isMaximized() || window()->isFullScreen() || d->_pIsFixedSize)
     // {
